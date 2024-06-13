@@ -196,6 +196,9 @@ const AntecedentesEquivalencias = props => {
     if (e.target.type === "checkbox") {
       const idLeyDigesto = parseInt(e.target.name.replace('documentoConsolidado', ''))
       let indice = aux.findIndex(n => n.idLeyDigesto === idLeyDigesto);
+      if(indice === -1) {
+        return setModalError({...form, show: true, mensaje: "Debe cargar un archivo para marcarlo como un documento consolidado."})
+      }
       aux[indice].documentoConsolidado = e.target.checked;
     }
     setForm({ ...form, ['leyesDigesto']: aux })

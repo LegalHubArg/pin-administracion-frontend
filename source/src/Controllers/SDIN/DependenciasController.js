@@ -20,7 +20,7 @@ const Dependencias = props => {
                     </nav>
                 </div>
             </header>
-            <div className="container">
+            <div className="container reponsive mb-5">
                 <header>
                     <h1>Dependencias</h1>
                 </header>

@@ -52,9 +52,9 @@ const HomeAdmin = props => {
           </div>
         </Link> */}
         <Link className="card" to={rutasAdmin.usuarios}>
-          <div className="card-body">
+          <div className="card-body" style={{display:"flex", gap:5}}>
             <FaUserFriends />
-            <h3 className="card-title">Usuarios</h3>
+            <h3 style={{marginTop:-2}} className="card-title">Usuarios</h3>
           </div>
         </Link>{/* 
         <Link className="card" to={rutasBO.feriados}>
@@ -69,9 +69,9 @@ const HomeAdmin = props => {
           </div>
         </Link>
         <Link className="card" to={rutasSDIN.temas + "/" + rutasSDIN.temas_jerarquia}>
-          <div className="card-body">
+          <div className="card-body" style={{display:"flex", gap:5}}>
             <RiOrganizationChart />
-            <h3 className="card-title">Jerarquía de temas</h3>
+            <h3 style={{marginTop:-2}} className="card-title">Jerarquía de Temas</h3>
           </div>
         </Link>
         <Link className="card" to={rutasSDIN.ramas}>
@@ -106,7 +106,7 @@ const HomeAdmin = props => {
         </Link>
         <Link className="card" to={rutasSDIN.temas_front}>
           <div className="card-body">
-            <h3 className="card-title">(Front) Árbol de temas</h3>
+            <h3 className="card-title">(Front) Árbol de Temas</h3>
           </div>
         </Link>
         <Link className="card" to={rutasSDIN.temas + "/" + rutasSDIN.indice_tematico}>

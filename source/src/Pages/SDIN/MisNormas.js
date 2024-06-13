@@ -88,9 +88,9 @@ const MisNormas = props => {
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
                             onClick={() => setModalAlcance({ show: true, alcance: 0 })}>CAMBIAR ALCANCE</button>
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
-                            onClick={() => setModalFechaSancion({ show: true, fechaSancion: '' })}>PISAR FECHA SANCIÓN</button>
+                            onClick={() => setModalFechaSancion({ show: true, fechaSancion: '' })}>MODIFICAR FECHA DE SANCIÓN</button>
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
-                            onClick={() => setModalFirmantes({ ...modalFirmantes, show: true })}>PISAR FIRMANTES</button>
+                            onClick={() => setModalFirmantes({ ...modalFirmantes, show: true })}>MODIFICAR FIRMANTES</button>
                     </div>
                     break;
                 case "Documental":
@@ -1697,6 +1697,7 @@ const MisNormas = props => {
                                     <label for="alcance">Alcance</label>
                                     <select className="custom-select" id="alcance"
                                         onChange={(e) => setModalAlcance({ ...modalAlcance, alcance: e.target.value })}>
+                                        <option value={null} disabled selected>Seleccione un alcance...</option>
                                         <option value={0}>General</option>
                                         <option value={1}>Particular</option>
                                     </select>
@@ -1722,6 +1723,7 @@ const MisNormas = props => {
                                         valores={dependencias?.map(n => ({ id: n.idDependencia, nombre: decode(n.dependencia) }))}
                                         setValue={({ id }) => setModalRepa({ ...modalRepa, idDependencia: id })}
                                     />
+                                    <p>Total de resultados: {dependencias.length}</p>
                                     {/* <select className="custom-select" id="comboDependencias"
                                         onChange={e => setModalRepa({ ...modalRepa, idDependencia: parseInt(e.target.value) })} value={modalRepa.idDependencia}
                                     ><option selected value={null}></option>
@@ -1746,7 +1748,7 @@ const MisNormas = props => {
                         </Modal.Footer>
                     </Modal>
                     <Modal show={modalFirmantes.show} onHide={() => setModalFirmantes({ show: false, firmantes: null })}>
-                        <Modal.Header><Modal.Title>Pisar Firmantes</Modal.Title></Modal.Header>
+                        <Modal.Header><Modal.Title>MODIFICAR Firmantes</Modal.Title></Modal.Header>
                         <Modal.Body>
                             <div className="form-wrapper bg-light p-4">
                                 <div class="form-group">

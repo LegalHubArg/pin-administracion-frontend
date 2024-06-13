@@ -15,6 +15,8 @@ const TiposDeNormas = props => {
     const [showModal, setShowModal] = useState(false)
     const [tipoBorrar, setTipoBorrar] = useState(null)
     const [totalP, setTotalP] = useState(null)
+    const [backendMessage, setBackendMessage] = useState("")
+    const [mostrarMensaje, setMostrarMensaje] = useState(false)
 
     const [paginacion, setPaginacion] = useState({
         paginaActual: 1,
@@ -58,9 +60,9 @@ const TiposDeNormas = props => {
         idNormaTipo: null,
         normaTipo: "",
         normaTipoSigla: "",
-        BO: false,
-        SDIN: false,
-        DJ: false
+        BO: null,
+        SDIN: null,
+        DJ: null
     })
 
     const handleForm = (e) => {
@@ -152,8 +154,6 @@ const TiposDeNormas = props => {
         }));
     };
 
-    console.log(tiposDeNormas)
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -176,7 +176,10 @@ const TiposDeNormas = props => {
                 })
                 getTiposDeNormas()
             })
-            .catch()
+            .catch(e => {
+                setBackendMessage(e.data.mensaje)
+                setMostrarMensaje(true)
+            })
         setLoading(false)
     }
 
@@ -414,6 +417,17 @@ const TiposDeNormas = props => {
                     <button className="btn btn-danger" onClick={(e) => borrarTipo(e, tipoBorrar)}>
                         Confirmar
                     </button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={mostrarMensaje} onHide={() => setMostrarMensaje(false)}>
+            <Modal.Header>
+                    <Modal.Title>Error</Modal.Title>
+            </Modal.Header>
+                <Modal.Body>
+                    <p>{backendMessage}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className='btn btn-secondary' onClick={() => {setBackendMessage(""); setMostrarMensaje(false)}}>Aceptar</button>
                 </Modal.Footer>
             </Modal>
         </>)

@@ -27,7 +27,7 @@ const BusquedaAvanzada = props => {
 
     const navigate = useNavigate();
 
-    const [isLoading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
     const [loadingNormas, setLoadingNormas] = useState(false)
     const [secciones, setSecciones] = useState([])
     const [normas, setNormas] = useState([])
@@ -52,6 +52,7 @@ const BusquedaAvanzada = props => {
         botones: [],
         cambiarPagina: false
     })
+    const [anexosDJ,setAnexosDJ] = useState([])
 
     const [tab, setTab] = useState("Normativo")
     const [showModalAnalistas, setShowModalAnalistas] = useState(false)
@@ -93,9 +94,9 @@ const BusquedaAvanzada = props => {
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
                             onClick={() => setModalAlcance({ show: true, alcance: 0 })}>CAMBIAR ALCANCE</button>
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
-                            onClick={() => setModalFechaSancion({ show: true, fechaSancion: '' })}>PISAR FECHA SANCIÓN</button>
+                            onClick={() => setModalFechaSancion({ show: true, fechaSancion: '' })}>MODIFICAR FECHA DE SANCIÓN</button>
                         <button type="button" class="btn btn-success btn-sm mr-2 mb-2" disabled={!(checkedNormas.length > 0)}
-                            onClick={() => setModalFirmantes({ ...modalFirmantes, show: true })}>PISAR FIRMANTES</button>
+                            onClick={() => setModalFirmantes({ ...modalFirmantes, show: true })}>MODIFICAR FIRMANTES</button>
                     </div>
                     break;
                 case "Documental":
@@ -229,9 +230,10 @@ const BusquedaAvanzada = props => {
         vigente: null,
         idRelacion:null,
         idCausal:null,
-        tieneFormulario:null
+        tieneFormulario:null,
+        idAnexoDJ:null
     }
-    const [form, setForm] = useState({ ...initForm, tipoFecha: "Sanción" });
+    const [form, setForm] = useState({ ...initForm });
 
     const handleFormChange = (e) => {
         let value;
@@ -299,10 +301,12 @@ const BusquedaAvanzada = props => {
                 break;
             case 'idTema':
                 value = parseInt(e.target.value);
-                setForm({
-                    ...form,
-                    ['temas']: [...form.temas, value]
-                })
+                if (!isNaN(value) && !form.temas.includes(value)) {
+                    setForm({
+                        ...form,
+                        ['temas']: [...form.temas, value]
+                    });
+                }
                 break;
             case 'idRama':
                 value = parseInt(e.target.value);
@@ -528,7 +532,7 @@ const BusquedaAvanzada = props => {
                 break;
             case 'idRelacion':
                 value = parseInt(e.target.value)
-                console.log(value)
+                // console.log(value)
                 if (isNaN(value)){
                     break;
                 }
@@ -562,6 +566,16 @@ const BusquedaAvanzada = props => {
                     ['tieneFormulario']:value
                 })
                 break;
+            case 'idAnexoDJ':
+                value = parseInt(e.target.value)
+                if (isNaN(value)){
+                    setForm({...form,['idAnexoDJ']:null})
+                    break;
+                }
+                setForm({
+                    ...form,['idAnexoDJ']:value
+                })
+                break;
             default:
                 setForm({
                     ...form,
@@ -571,7 +585,6 @@ const BusquedaAvanzada = props => {
         }
     }
 
-    console.log(form)
     useEffect(() => {
         setCalcularTotal(true)
     }, [form])
@@ -775,6 +788,26 @@ const BusquedaAvanzada = props => {
         }
     }
 
+    const getAnexos = async () => {
+        setLoading(true);
+        try {
+            let token = localStorage.getItem("token");
+            await ApiPinGet('/api/v1/dj/anexos', token).then((res) => {
+                setAnexosDJ(res.data.data)
+            }).catch(function (error) {
+                setLoading(false)
+                setAnexosDJ([])
+                // console.log(error);
+            });
+            setLoading(false)
+        }
+        catch (error) {
+            setLoading(false)
+            // console.log(error);
+            linkToParams('/', {}, navigate)
+        }
+    }
+
     const getJerarquia = async () => {
         setLoading(true);
         try {
@@ -862,7 +895,7 @@ const BusquedaAvanzada = props => {
                 <tbody>
                     {
                         normas.length > 0 ? (
-                            normas.map(n => (
+                            normas.filter(nor => nor.normasEstadoTipo !== "Eliminada").map(n => (
                                 <tr>
                                     <td>{n.idNormaSDIN}</td>
                                     <td> <Link to={"/sdin/ficha-norma/" + String(n.idNormaSDIN)}><b style={colorNormaTipo}>{decode(n.normaTipo)}</b> N° <b style={colorNormaNumero}>{n.normaNumero}</b> / <b style={colorOrganismo}>{n.siglaOrganismo}</b> / <b style={colorDependencia}>{n.siglaDependencia ? n.siglaDependencia : ''}</b> / <b style={colorAnio}>{n.fechaSancion ? moment(n.fechaSancion).format('YY') : ''}</b></Link></td>
@@ -875,7 +908,7 @@ const BusquedaAvanzada = props => {
                                     <td>{decode(n.normasEstadoTipo)}</td>
 
                                     <td>
-                                        <Link to={"/sdin/ficha-norma/" + String(n.idNormaSDIN)}>
+                                        <Link to={"/sdin/ficha-norma/" + String(n.idNormaSDIN)} target="_blank" rel="noopener noreferrer">
                                             <button className="btn btn-link btn-sm">
                                                 <FaEye />
                                             </button>
@@ -913,7 +946,7 @@ const BusquedaAvanzada = props => {
         // console.log('SUBMIT')
         await getNormas(form)
             .then(() => {
-                document.getElementById('resultados-busqueda').scrollIntoView({
+                document.getElementById('resultados-busqueda')?.scrollIntoView({
                     behavior: 'smooth'
                 });
             })
@@ -1121,7 +1154,8 @@ const BusquedaAvanzada = props => {
         await getGestiones(),
         await getTemas(),
         await getRelaciones(),
-        await getCausales()]);
+        await getCausales(),
+        await getAnexos()]);
 
         await ApiPinGet('/api/v1/sdin/normas/tipos', localStorage.getItem('token')).then((res) => setTiposNorma(res.data.data));
         await ApiPinPost('/api/v1/sdin/ramas', { usuario: localStorage.getItem('user_cuit') }, localStorage.getItem('token')).then((res) => setRamas(res.data.ramas));
@@ -1132,7 +1166,7 @@ const BusquedaAvanzada = props => {
         setLoading(false)
     }, [])
 
-    if (isLoading) {
+    if (loading) {
         return (<Spinner />)
     }
     else {
@@ -1363,21 +1397,30 @@ const BusquedaAvanzada = props => {
                                             </div>
                                             <div className="form-group">
                                                 <label for="idTema">Temas</label>
-                                                <select className="custom-select" id="idTema" name="idTema"
-                                                    onChange={e => handleFormChange(e)} value={-1}
+                                                <select
+                                                    className="custom-select"
+                                                    id="idTema"
+                                                    name="idTema"
+                                                    onChange={e => handleFormChange(e)}
+                                                    value={-1}
                                                 ><option selected value={-1}></option>
-                                                    {temas && (temas.length > 0) ? (
-                                                        temas.map((p, index) => (
-                                                            <option value={p.idTema} key={'opt-sec-' + index}>{p.tema}</option>
-                                                        ))
-
-                                                    ) : (<option selected disabled>No hay temas</option>)
-                                                    }
+                                                    {temas && temas.length > 0 ? (
+                                                        temas
+                                                            .slice() // Copia el array para no modificar el original
+                                                            .sort((a, b) => a.tema.localeCompare(b.tema)) // Ordena alfabéticamente por la propiedad 'tema'
+                                                            .map((p, index) => (
+                                                                <option value={p.idTema} key={'opt-sec-' + index}>
+                                                                    {p.tema}
+                                                                </option>
+                                                            ))
+                                                    ) : (
+                                                        <option selected disabled>No hay temas</option>
+                                                    )}
                                                 </select>
                                             </div>
                                             <div className="card dependencias">
                                                 {form && form.temas && form.temas.map((elem) =>
-                                                    <span className="badge badge-info">
+                                                    <span className="badge badge-info" style={{whiteSpace: "normal"}}>
                                                         {temas.find((n) => n.idTema === elem).tema}&nbsp;
                                                         <FaTimes color='#C93B3B' type='button'
                                                             onClick={() => setForm({
@@ -1524,6 +1567,19 @@ const BusquedaAvanzada = props => {
                                                 <option value={5}>5. Necesidad de abrogación, derogación o caducidad expresa</option>
                                                 <option value={6}>6. Elaboración de texto definitivo</option>
                                                 <option value={7}>7. Tablas de Antecedentes y Equivalencias</option>
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label for="idAnexoDJ">Anexo</label>
+                                                <select className='custom-select' id='idAnexoDJ' name='idAnexoDJ'
+                                                onChange={e => handleFormChange(e)}
+                                                value={(form.idAnexoDJ != null) ? form.idAnexoDJ : null}>
+                                                <option selected value={null}></option>
+                                                    {(anexosDJ && anexosDJ.length > 0)
+                                                    ?anexosDJ.map((a,index) =>(
+                                                        <option value={a.idAnexoDJ} key={`opt-select-${index}`}>{a.nombre}</option>
+                                                    ))
+                                                    :(<option selected disabled>No hay anexos para mostrar</option>)}
                                                 </select>
                                             </div>
                                             <div className="form-group">
@@ -1770,7 +1826,7 @@ const BusquedaAvanzada = props => {
                                         <select className="custom-select" id="idNormasEstadoTipo" onChange={(e) => setEstadoSeleccionado(e.target.value)}>
                                             <option selected value="" hidden></option>
                                             {estados && (estados.length > 0) ? (
-                                                estados.map((p, index) => (
+                                                estados.filter(e => e.idNormasEstadoTipo !== 0).map((p, index) => (
                                                     <option value={p.idNormasEstadoTipo} key={'opt-sec-' + index}>{decode(p.normasEstadoTipo)}</option>
                                                 ))
 
@@ -1832,6 +1888,7 @@ const BusquedaAvanzada = props => {
                                     <label for="alcance">Alcance</label>
                                     <select className="custom-select" id="alcance"
                                         onChange={(e) => setModalAlcance({ ...modalAlcance, alcance: e.target.value })}>
+                                        <option value="" selected disabled>Seleccione el alcance de la norma...</option>
                                         <option value="G">General</option>
                                         <option value="P">Particular</option>
                                     </select>
@@ -1857,6 +1914,8 @@ const BusquedaAvanzada = props => {
                                         valores={dependencias?.map(n => ({ id: n.idDependencia, nombre: decode(n.dependencia) }))}
                                         setValue={({ id }) => setModalRepa({ ...modalRepa, idDependencia: id })}
                                     />
+                                    <br />
+                                    <p>Total de resultados: {dependencias?.length}</p>
                                     {/* <select className="custom-select" id="comboDependencias"
                                         onChange={e => setModalRepa({ ...modalRepa, idDependencia: parseInt(e.target.value) })} value={modalRepa.idDependencia}
                                     ><option selected value={null}></option>
@@ -1881,7 +1940,7 @@ const BusquedaAvanzada = props => {
                         </Modal.Footer>
                     </Modal>
                     <Modal show={modalFirmantes.show} onHide={() => setModalFirmantes({ show: false, firmantes: null })}>
-                        <Modal.Header><Modal.Title>Pisar Firmantes</Modal.Title></Modal.Header>
+                        <Modal.Header><Modal.Title>MODIFICAR Firmantes</Modal.Title></Modal.Header>
                         <Modal.Body>
                             <div className="form-wrapper bg-light p-4">
                                 <div class="form-group">

@@ -15,7 +15,7 @@ const Jerarquia = props => {
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><Link to={'/'}>Home</Link></li>
                             <li class="breadcrumb-item"><Link to={rutasAdmin.home}>Administración</Link></li>
-                            <li class="breadcrumb-item">Jerarquía</li>
+                            <li class="breadcrumb-item">Jerarquía de Temas</li>
                         </ol>
                     </nav>
                 </div>

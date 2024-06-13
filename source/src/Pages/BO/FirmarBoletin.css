@@ -45,7 +45,7 @@
 
 #pagina-firma-boletin #ver-boletin {
     margin-block: 1em;
-    max-width: 135px;
+    max-width: 155px;
     overflow: hidden;
     white-space: nowrap;
     transition: max-width 0.5s ease-in-out;
@@ -60,7 +60,7 @@
 
 #pagina-firma-boletin>.ver-separata {
     margin-bottom: 1em;
-    max-width: 95px;
+    max-width: 115px;
     overflow: hidden;
     white-space: nowrap;
     transition: max-width 0.5s ease-in-out;

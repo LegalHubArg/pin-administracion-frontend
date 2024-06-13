@@ -14,14 +14,14 @@ const PatologiasABM = props => {
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><Link to={'/'}>Home</Link></li>
                             <li class="breadcrumb-item"><Link to={rutasAdmin.home}>Administración</Link></li>
-                            <li class="breadcrumb-item">PatologiasABM</li>
+                            <li class="breadcrumb-item">Patologías Normativas</li>
                         </ol>
                     </nav>
                 </div>
             </header>
             <div class="container reponsive mb-5">
                 <header>
-                    <h1 class="mb-3">Patologias</h1>
+                    <h1 class="mb-3">Patologías Normativas</h1>
                 </header>
                 <hr />
                 <VistaPatologiasABM />

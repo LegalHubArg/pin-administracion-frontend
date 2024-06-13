@@ -7,6 +7,7 @@ import Spinner from '../../../Components/Spinner/Spinner';
 import { FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import moment from 'moment';
+import { Pagination } from '@gcba/obelisco'
 
 const CausalesABM = props => {
     const [causalesABM, setCausalesABM] = useState([])
@@ -15,6 +16,20 @@ const CausalesABM = props => {
     const [showModal, setShowModal] = useState(false)
     const [showExiste, setShowExiste] = useState(false)
     const [tipoBorrar, setTipoBorrar] = useState(null)
+    const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
 
     const [form, setForm] = useState({
         idCausal: null,
@@ -59,14 +74,35 @@ const CausalesABM = props => {
         let body = {
             usuario: localStorage.getItem("user_cuit"),
             idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            ...paginacion
         }
         await ApiPinPost('/api/v1/sdin/abm/causales/traer', body, localStorage.getItem("token"))
             .then((res) => {
                 setCausalesABM(res.data.data)
-                console.log("quiero saber: ", res.data.data)
+                setTotalResultados(res.data.totalCausales)
+                // console.log(res.data)
+                // console.log("quiero saber: ", res.data.data)
+                let auxPaginacion = paginacion;
+                auxPaginacion.totalPaginas = Math.ceil(res.data.totalCausales / auxPaginacion.limite);
+                auxPaginacion.botones = [];
+                for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                    auxPaginacion.botones.push(i)
+                }
+                setPaginacion({...auxPaginacion})
             })
             .catch()
     }
+
+    console.log(paginacion)
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getCausalesABM()
+        }
+    }, [paginacion])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -199,6 +235,7 @@ const CausalesABM = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {causalesABM && causalesABM.length > 0 &&
                     <table className="table table-bordered">
                         <thead>
@@ -249,6 +286,10 @@ const CausalesABM = props => {
                     </table>
                 }
             </div>
+                {paginacion && causalesABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination pages={paginacion.totalPaginas}
+                        onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este causal?</Modal.Title>

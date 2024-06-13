@@ -21,6 +21,8 @@ const PublicacionesDesdeHasta = props => {
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState([]);
   const [fechasDefault, setFechasDefault] = useState([]);
   const [fechaMinima, setFechaMinima] = useState();
+  const [anioSeleccionado, setAnioSeleccionado] = useState(null)
+  const [feriados, setFeriados] = useState([])
   const navigate = useNavigate();
 
   //Inicial Hook
@@ -63,7 +65,10 @@ const PublicacionesDesdeHasta = props => {
         fechas.sort((a, b) => new Date(a.fechaPublicacion) - new Date(b.fechaPublicacion));
 
         setPublicaciones(fechas)
+        let anio = [...fechas].map(n => moment(n.fechaPublicacion).format('YYYY'))[0]
         setFechasSeleccionadas([...fechas].map(n => moment(n.fechaPublicacion).format('YYYY-MM-DD')))
+        setAnioSeleccionado(anio)
+        traerFeriados(anio)
         setFechasDefault([...fechas].map(n => moment(n.fechaPublicacion).format('YYYY-MM-DD')))
         setFechaMinima(fechaMinimaModificacion())
       })
@@ -71,6 +76,18 @@ const PublicacionesDesdeHasta = props => {
     }
     catch (error) {
       setLoading(true)
+    }
+  }
+  //traer feriados
+  const traerFeriados = async (fechaAnio) => {
+    try {
+      let token = localStorage.getItem("token");
+      let body = {fechaAnio: fechaAnio}
+      const response = await ApiPinPost('/api/v1/boletin-oficial/feriados', body, token)
+      setFeriados(response.data.data)
+    } catch (error) {
+      console.log(error)
+      throw error
     }
   }
 
@@ -127,6 +144,7 @@ const PublicacionesDesdeHasta = props => {
           defaultValues={fechasDefault}
           yaPublicadas={publicaciones.filter(n => n.boletinNumero).map(n => moment(n.fechaPublicacion).format('YYYY-MM-DD'))}
           fechaMinima={fechaMinima}
+          feriados={feriados}
         />
         <br />
         <button className="btn btn-primary" onClick={() => guardarPublicaciones()}>Guardar</button>

@@ -20,7 +20,7 @@ const TiposDeNorma = props => {
                     </nav>
                 </div>
             </header>
-            <div className="container">
+            <div className="container reponsive mb-5">
                 <header>
                     <h1>Tipos de Norma</h1>
                 </header>

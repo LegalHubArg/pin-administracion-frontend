@@ -22,6 +22,7 @@ const DependenciasABM = props => {
     const [dependenciaBorrar, setDependenciaBorrar] = useState(null)
     const [orgEmisores, setOrgEmisores] = useState([])
     const [niveles, setNiveles] = useState([])
+    const [backendMessage, setBackendMessage] = useState("")
     const [totalResultados, setTotalResultados] = useState()
     const [paginacion, setPaginacion] = useState({
         paginaActual: 1,
@@ -103,13 +104,13 @@ const DependenciasABM = props => {
                 setForm({ ...form, fechaHasta: value })
                 break;
             case 'padre':
-                setForm({ ...formEdicion, padre: value })
+                setForm({ ...form, padre: value })
                 break;
             case 'idNormaSDIN':
-                setForm({ ...formEdicion, idNormaSDIN: value })
+                setForm({ ...form, idNormaSDIN: value })
                 break;
             case 'nivel':
-                setForm({ ...formEdicion, nivel: value })
+                setForm({ ...form, nivel: value })
                 break;
         }
     }
@@ -191,8 +192,11 @@ const DependenciasABM = props => {
                 setForm(initForm)
                 getDependenciasABM()
             })
-            .catch(error =>
+            .catch(error =>{
+                setBackendMessage(error.data)
                 setShowExiste(true)
+            }
+               
             )
         setLoading(false)
     }
@@ -399,7 +403,8 @@ const DependenciasABM = props => {
                                                         id="fechaDesde"
                                                         name="fechaDesde"
                                                         value={form.fechaDesde}
-                                                        onChange={e => handleForm(e)}
+                                                        onChange={e => handleForm(e)}   
+                                                        required
                                                     />
                                                 </div>
                                                 <div class="form-group col">
@@ -624,9 +629,12 @@ const DependenciasABM = props => {
                         ))}
                     </tbody>
                 </table>
+                
+            </div>
+            {paginacion && <div style={{ display: "flex", justifyContent: "center" }}>
                 <Pagination pages={paginacion.totalPaginas}
                     onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
-            </div>
+            </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este tema?</Modal.Title>
@@ -645,11 +653,11 @@ const DependenciasABM = props => {
                     <Modal.Title></Modal.Title>
                 </Modal.Header>
                 <Modal.Footer>
-                    <h1>
-                        Este tema ya existe
-                    </h1>
+                    <h2>
+                        {backendMessage.data}
+                    </h2>
                     <button className="btn btn-link" onClick={() => setShowExiste(false)}>
-                        Volver
+                        Aceptar
                     </button>
                 </Modal.Footer>
             </Modal>
@@ -771,6 +779,7 @@ const DependenciasABM = props => {
                                 className="form-control form-control-sm"
                                 id="idNormaSDIN"
                                 name="idNormaSDIN"
+                                min={1}
                                 value={formEdicion.idNormaSDIN}
                                 onChange={e => handleFormEdicion(e)}
                             />

@@ -7,6 +7,8 @@ import Spinner from '../../../Components/Spinner/Spinner';
 import { FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import moment from 'moment';
+import { Pagination } from '@gcba/obelisco'
+
 
 const RamasABM = props => {
     const [ramasABM, setRamasABM] = useState([])
@@ -15,6 +17,20 @@ const RamasABM = props => {
     const [showModal, setShowModal] = useState(false)
     const [showExiste, setShowExiste] = useState(false)
     const [tipoBorrar, setTipoBorrar] = useState(null)
+    const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
 
     const [form, setForm] = useState({
         idRama: null,
@@ -37,10 +53,10 @@ const RamasABM = props => {
             case 'descripcion':
                 setForm({ ...form, descripcion: value })
                 break;
-                
-            } 
-        console.log("valores=== ", e.target.value )
-}
+
+        }
+        console.log("valores=== ", e.target.value)
+    }
 
     const handleFormEdicion = (e) => {
         let value = e.target.value;
@@ -51,22 +67,39 @@ const RamasABM = props => {
             case 'descripcion':
                 setFormEdicion({ ...formEdicion, descripcion: value })
                 break;
-            }
         }
-    
+    }
+
 
     const getRamasABM = async () => {
         let body = {
             usuario: localStorage.getItem("user_cuit"),
             idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            ...paginacion
         }
         await ApiPinPost('/api/v1/sdin/abm/ramas/traer', body, localStorage.getItem("token"))
             .then((res) => {
                 setRamasABM(res.data.data)
-                console.log("quiero saber: ", res.data.data)
+                setTotalResultados(res.data.total)
+                // console.log(res.data.total)
+                let auxPaginacion = paginacion;
+                auxPaginacion.totalPaginas = Math.ceil(res.data.total / auxPaginacion.limite);
+                auxPaginacion.botones = [];
+                for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                    auxPaginacion.botones.push(i)
+                }
             })
             .catch()
     }
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getRamasABM()
+        }
+    }, [paginacion])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -85,11 +118,12 @@ const RamasABM = props => {
                 })
                 getRamasABM()
             })
-            .catch( error => {{console.log(error)}
-            
-            setShowExiste(true)
-            
-        })
+            .catch(error => {
+                { console.log(error) }
+
+                setShowExiste(true)
+
+            })
         setLoading(false)
     }
 
@@ -141,7 +175,7 @@ const RamasABM = props => {
             descripcion: elem.descripcion
         })
         if (habilitarEdicion) {
-            setFormEdicion({ idRama: null, rama: "", descripcion: ""  })
+            setFormEdicion({ idRama: null, rama: "", descripcion: "" })
         }
         setHabilitarEdicion(!habilitarEdicion)
     }
@@ -171,7 +205,7 @@ const RamasABM = props => {
                                 </button>
                                 <div id="collapseOne" class="collapse" data-parent="#accordion">
                                     <div class="card-body">
-                                        <form className="form-wrapper d-flex align-items-center" onSubmit={e => {handleSubmit(e); setShowExiste(false)}}>
+                                        <form className="form-wrapper d-flex align-items-center" onSubmit={e => { handleSubmit(e); setShowExiste(false) }}>
                                             <div class="form-group" style={{ width: "60%" }}>
                                                 <label for="rama">Rama</label>
                                                 <input
@@ -202,6 +236,7 @@ const RamasABM = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {ramasABM && ramasABM.length > 0 &&
                     <table className="table table-bordered">
                         <thead>
@@ -252,6 +287,10 @@ const RamasABM = props => {
                     </table>
                 }
             </div>
+                {paginacion && ramasABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Pagination pages={paginacion.totalPaginas}
+                            onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                    </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar esta rama?</Modal.Title>

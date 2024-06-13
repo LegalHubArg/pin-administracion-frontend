@@ -22,6 +22,7 @@ const TemasABM = props => {
     const [habilitar, setHabilitar] = useState(null)
     const [ramas, setRamas] = useState([])
     const [ramaNorma, setRamaNorma] = useState()
+    const [totalTemas, setTotalTemas] = useState(null)
     
     const [ordenamiento, setOrdenamiento] = useState({
         campo: 'idNormaSDIN',
@@ -98,6 +99,7 @@ const TemasABM = props => {
         await ApiPinPost('/api/v1/sdin/abm/temas/traer', body, localStorage.getItem("token"))
             .then((res) => {
                 setTemasABM(res.data.temas)
+                setTotalTemas(res.data.totalTemas)
                 let auxPaginacion = paginacion;
                 auxPaginacion.totalPaginas = Math.ceil(res.data.totalTemas / auxPaginacion.limite);
                 auxPaginacion.botones = [];
@@ -311,6 +313,7 @@ const TemasABM = props => {
                 </div>
                 {temasABM && temasABM.length > 0 &&
                 <div>
+                    <p>Resultados ({totalTemas}): </p>
                     <table className="table table-bordered">
                         <thead>
                             <tr>
@@ -393,14 +396,13 @@ const TemasABM = props => {
                             ))}
                         </tbody>
                     </table>
-                    <br />
-                    {paginacion && temasABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
-                        <Pagination pages={paginacion.totalPaginas}
-                            onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
-                    </div>}
                 </div>
                 }
             </div>
+                {paginacion && temasABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination pages={paginacion.totalPaginas}
+                        onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este tema?</Modal.Title>

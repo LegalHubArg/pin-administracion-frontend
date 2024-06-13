@@ -36,7 +36,7 @@ const AnalisisNormativo = ({ norma }) => {
   const initForm = {
     idNormaTipo: norma.idNormaTipo,
     idNormaSubtipo: norma.idNormaSubtipo,
-    idOrganismo: norma.idOrganismo,
+    idReparticionOrganismo: norma.idOrganismo,
     idReparticion: norma.idDependencia,
     normaNumero: norma.normaNumero,
     numeroBO: norma.numeroBO,
@@ -193,7 +193,7 @@ const AnalisisNormativo = ({ norma }) => {
         }
         setForm({
           ...form,
-          ['idOrganismo']: value
+          ['idReparticionOrganismo']: value
         })
         break;
       case 'idDependencia':
@@ -783,7 +783,7 @@ const AnalisisNormativo = ({ norma }) => {
               <div className="form-group">
                 <label for="idOrganismo">Organismo</label>
                 <select className="custom-select" id="idOrganismo" name="idOrganismo"
-                  onChange={e => handleFormChange(e)} value={(form.idOrganismo != null) ? form.idOrganismo : -1}
+                  onChange={e => handleFormChange(e)} value={(form.idReparticionOrganismo != null) ? form.idReparticionOrganismo : -1}
                 ><option value={-1}></option>
                   {organismos && (organismos.length > 0) ? (
                     organismos.map((p, index) => (

@@ -19,7 +19,7 @@ const EdicionGOBO = props => {
   const [jerarquias, setJerarquias] = useState(null);
   const [permisos, setPermisos] = useState(null)
   const [reparticiones, setReparticiones] = useState(null);
-  const [organismoNombreArchivo,setOrganismoNombreArchivo] = useState("")
+
   const navigate = useNavigate();
 
   //Inicial Hook
@@ -34,22 +34,32 @@ const EdicionGOBO = props => {
         unForm.fechaDesde = timestampToDateFormat(form.fechaDesde, 'YYYY-MM-DD')
         unForm.fechaHasta = timestampToDateFormat(form.fechaHasta, 'YYYY-MM-DD')
       }
+
+      const orgs = await traerOrganismos()
+      let orgSeleccionado = orgs?.find(o => o.sigla === form?.organismoEmisor)
+      unForm.idOrgEmisor = orgSeleccionado?.idOrgEmisor
+      unForm.organismoEmisor = orgSeleccionado?.sigla
+
       setForm(unForm)
       await Promise.all([
-        traerOrganismos(),
         getPermisos(),
       ]);
       let normaTipos = await traerTiposDeNormasPorSeccion(permisos, form.idSeccion)
-      console.log(form.seccionEsPoder)
       let repas = form.seccionEsPoder ?
-              await ApiPinPost('/api/v1/boletin-oficial/sumario/seccion/tipo/reparticiones', { idSumarioNormasTipo: normaTipos && normaTipos.filter(n => n.idNormaTipo === form.idNormaTipo)[0].idSumarioNormasTipo }, localStorage.getItem("token"))
-              :
-              await ApiPinPost('/api/v1/boletin-oficial/sumario/seccion/reparticiones', { idSeccion: form.idSeccion }, localStorage.getItem("token"))
-            setReparticiones(repas.data.data)
+        await ApiPinPost('/api/v1/boletin-oficial/sumario/seccion/tipo/reparticiones', { idSumarioNormasTipo: normaTipos && normaTipos.filter(n => n.idNormaTipo === form.idNormaTipo)[0].idSumarioNormasTipo }, localStorage.getItem("token"))
+        :
+        await ApiPinPost('/api/v1/boletin-oficial/sumario/seccion/reparticiones', { idSeccion: form.idSeccion }, localStorage.getItem("token"))
+      setReparticiones(repas.data.data)
       setLoading(false);
-      // console.log(form)
     }
   }, [])
+
+  // useEffect(() => {
+  //   let siglasNuevas = organismos?.find(o => o.sigla === organismoSeleccionado?.sigla).sigla
+  //   setSigla(siglasNuevas)
+  // }, [organismoSeleccionado])
+
+
   const getPermisos = async () => {
     try {
       let body = {
@@ -99,10 +109,12 @@ const EdicionGOBO = props => {
     }
   }
 
-  //Check Form
-  useEffect(() => {
-    //  console.log(form)
-  }, [form])
+
+  // //Check Form
+  // useEffect(() => {
+  //   console.log(form)
+  // }, [form])
+
 
   //Traer Organismos
   const traerOrganismos = async () => {
@@ -110,47 +122,37 @@ const EdicionGOBO = props => {
       let body = {};
       body.usuario = localStorage.getItem("user_cuit");
       let token = localStorage.getItem("token");
-      await ApiPinPost('/api/v1/boletin-oficial/organismos-emisores', body, token).then(res => {
-        // setJerarquias(res.data.data)
-        // let filtrados = filtrarOrganismos(res.data.data);
-        setOrganismos(res.data.data)
-
-      }).catch(function (error) {
-        setLoading(true)
-        // console.log(error);
-      });
+      const res = await ApiPinPost('/api/v1/boletin-oficial/organismos-emisores', body, token)
+      // setJerarquias(res.data.data)
+      // let filtrados = filtrarOrganismos(res.data.data);
+      setOrganismos(res.data.data)
       setLoading(false)
+      return res.data.data
+
     }
     catch (error) {
       setLoading(true)
-      // console.log(error);
       linkToParams('/', {}, navigate)
     }
   }
-
-  useEffect(()=>{
-    //let newName = form.normaArchivoOriginal.replace(form.organismoEmisor,organismoNombreArchivo)
-    let siglasNuevas = organismoNombreArchivo
-    setForm({...form,organismoEmisor:siglasNuevas})
-  },[organismoNombreArchivo])
 
   const handleFormChange = (e) => {
     let value;
     switch (e.target.name) {
       case 'idOrgEmisor':
         value = parseInt(e.target.value);
-        /* let repas = jerarquias.filter(j => j.idReparticionOrganismo === value)
-          .map(({ siglaOrganismo, organismo, idOrgJerarquia, idReparticionOrganismo, ...r }) => r) */
-        let org = organismos.filter(e=>e.idOrgEmisor === value)
-        if (org.length !== 0){
-          let siglas = org[0].sigla
-          setOrganismoNombreArchivo(siglas)
-        }
-          setForm({
-          ...form,
-          ['idOrgEmisor']: value
-        })
+        // let org = organismos.filter(e => e.idOrgEmisor === value)
 
+        let org = organismos?.find((org) => org.idOrgEmisor === parseInt(value))
+        // if (org.length !== 0){
+        //   let siglas = org[0].sigla
+        //   setOrganismoNombreArchivo(siglas)
+        // }
+        setForm({
+          ...form,
+          ['idOrgEmisor']: value,
+          organismoEmisor: org.sigla
+        })
         //filtrarReparticiones(value)
         //traerReparticionPorOrganismo(permisos, value)
         break;
@@ -210,15 +212,12 @@ const EdicionGOBO = props => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log('META')
     let body = form;
     body.usuario = localStorage.getItem("user_cuit");
     let token = localStorage.getItem("token");
-    // console.log(body)
     await ApiPinPost('/api/v1/boletin-oficial/normas/norma/editar-meta', body, token).then(res => {
-      window.location.reload();
+      window.location.reload()
     }).catch(function (error) {
-      // console.log(error);
     });
   }
 
@@ -233,21 +232,17 @@ const EdicionGOBO = props => {
             <div class="col-auto">
               <div className="form-group">
                 <label for="idOrgEmisor">Organismo</label>
-                <select className="custom-select" id="idOrgEmisor" name="idOrgEmisor" onChange={(e) => handleFormChange(e)}>
-                  {organismos && (organismos != {}) ? (
-                    <>
-                      <option value={""} disabled>Seleccione un organismo</option>
-                      {organismos.map((p, index) => {
-
-                        return (
-                          <option value={p.idOrgEmisor} selected={p.idOrgEmisor === form.idOrgEmisor} key={'opt-organismo-' + index}>({p.sigla}) {p.nombre}</option>
-                        )
-                      })
-                      }
-                    </>
-                  ) : (<option selected disabled>No hay organismos para mostrar</option>)
-                  }
+                <select className="custom-select" id="idOrgEmisor" name="idOrgEmisor" value={form?.idOrgEmisor} required onChange={(e) => handleFormChange(e)}>
+                  <option value={""} disabled>Seleccione un organismo</option>
+                  {organismos && organismos.length > 0 ? (
+                    organismos.map((p, index) => (
+                      <option value={p.idOrgEmisor} key={'opt-organismo-' + index}>({p.sigla}) {p.nombre}</option>
+                    ))
+                  ) : (
+                    <option disabled>No hay organismos para mostrar</option>
+                  )}
                 </select>
+
               </div>
             </div>
             <div class="col-auto">
@@ -262,7 +257,7 @@ const EdicionGOBO = props => {
                       )
                       }
                     </>
-                  ) : (<option selected disabled>No hay organismos para mostrar</option>)
+                  ) : (<option selected disabled>No hay reparticiones para mostrar</option>)
                   }
                 </select>
               </div>
@@ -282,7 +277,7 @@ const EdicionGOBO = props => {
                     onChange={e => handleFormChange(e)}
                     value={form.fechaDesde}
                     min={
-                      JSON.parse(localStorage.getItem("perfil")).idPerfil === 5 ? 
+                      JSON.parse(localStorage.getItem("perfil")).idPerfil === 5 ?
                         moment().day() === 5
                           ? moment().add(3, 'day').format('YYYY-MM-DD')
                           : moment().day() === 6
@@ -336,7 +331,7 @@ const EdicionGOBO = props => {
                     onChange={e => handleFormChange(e)}
                     value={form.fechaSugerida}
                     min={
-                      JSON.parse(localStorage.getItem("perfil")).idPerfil === 5 ? 
+                      JSON.parse(localStorage.getItem("perfil")).idPerfil === 5 ?
                         moment().day() === 5
                           ? moment().add(3, 'day').format('YYYY-MM-DD')
                           : moment().day() === 6

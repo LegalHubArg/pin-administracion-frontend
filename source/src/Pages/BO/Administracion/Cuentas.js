@@ -115,7 +115,6 @@ const Cuentas = props => {
                 ...paginacion,
                 buscador: vacio === '' ? vacio : buscador
             }
-            console.log(body)
             await ApiPinPost(`/api/v1/boletin-oficial/cuentas`, body, localStorage.getItem("token"))
                 .then((res) => {
                     setCuentas(res.data.cuentas)

@@ -8,6 +8,7 @@ import Spinner from '../../Components/Spinner/Spinner';
 import { FaCheck, FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import { decode } from 'html-entities';
+import { Pagination } from '@gcba/obelisco'
 
 const Descriptores = props => {
     const [descriptores, setDescriptores] = useState([])
@@ -18,6 +19,7 @@ const Descriptores = props => {
     const [descriptorBorrar, setDescriptorBorrar] = useState(null)
     const [descriptor, setDescriptor] = useState('')
     const [textoBusqueda, setTextoBusqueda] = useState()
+    const [totalDescriptores, setTotalDescriptores] = useState(null)
     const [formEdicion,setFormEdicion] = useState({
         idDescriptor : null,
         descriptor : ""
@@ -48,7 +50,6 @@ const Descriptores = props => {
     }
 
     const getDescriptores = async (p) => {
-        setLoadingDescriptores(true)
         let body = {
             ...paginacion,
             usuario: localStorage.getItem("user_cuit"),
@@ -57,12 +58,12 @@ const Descriptores = props => {
         await ApiPinPost('/api/v1/sdin/descriptores', body, localStorage.getItem("token"))
             .then(res => {
                 setDescriptores(res.data.descriptores)
+                setTotalDescriptores(res.data.totalDescriptores)
                 let auxPaginacion = { ...paginacion };
                 auxPaginacion.totalPaginas = Math.ceil(res.data.totalDescriptores / auxPaginacion.limite);
                 setPaginacion({ ...auxPaginacion });
             })
             .catch()
-        setLoadingDescriptores(false)
     }
 
     const handleSubmit = async (e) => {
@@ -142,8 +143,9 @@ const Descriptores = props => {
         
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         setLoading(true)
+        await getDescriptores().catch()
         setLoading(false)
     }, [])
 
@@ -199,6 +201,7 @@ const Descriptores = props => {
                     </div>
                     <button type="submit" className="btn btn-primary ml-5"><FaSearch /> </button>
                 </form>
+                <p>Resultados ({totalDescriptores || 0}):</p>
                 {isLoadingDescriptores && <Spinner />}
                 {descriptores && descriptores.length > 0 && !isLoadingDescriptores &&
                     <table className="table table-bordered">
@@ -256,39 +259,11 @@ const Descriptores = props => {
                         </tbody>
                     </table>
                 }
-            <div className="mt-2 d-flex justify-content-center">
-                      <nav className="">
-                        <ul className="pagination">
-                          {paginacion?.paginaActual !== 1 &&
-                            <li className="page-item">
-                              <a className="page-link" onClick={(e) => cambiarPagina(e, paginacion?.paginaActual - 1)}>
-                                <span className="page-previous-icon" aria-hidden="true"></span>
-                                <span className="page-previous-text">Anterior</span>
-                              </a>
-                            </li>}
-                          <li className={paginacion?.paginaActual === 1 ? "page-item active no-events" : "page-item"}>
-                            <a className="page-link" onClick={(e) => cambiarPagina(e, 1)}>1</a>
-                          </li>
-                          {paginacion?.paginaActual > 2 && <li className="page-item no-events"><span className="page-link">...</span></li>}
-                          {paginacion?.paginaActual > 1 && paginacion?.paginaActual !== paginacion?.totalPaginas &&
-                            <li className="page-item active no-events"><a className="page-link">{paginacion?.paginaActual}</a></li>}
-                          {paginacion?.paginaActual < paginacion?.totalPaginas - 1 && paginacion?.totalPaginas > 2 &&
-                            <li className="page-item no-events"><span className="page-link">...</span></li>}
-                          {paginacion?.totalPaginas > 1 &&
-                            <li className={paginacion?.totalPaginas === paginacion?.paginaActual ? "page-item active no-events" : "page-item"}>
-                              <a className="page-link" onClick={(e) => cambiarPagina(e, paginacion?.totalPaginas)}>{paginacion?.totalPaginas}</a>
-                            </li>}
-                          {paginacion?.paginaActual !== paginacion?.totalPaginas &&
-                            <li className="page-item">
-                              <a className="page-link" onClick={(e) => cambiarPagina(e, paginacion?.paginaActual + 1)}>
-                                <span className="page-next-text">Siguiente</span>
-                                <span className="page-next-icon" aria-hidden="true"></span>
-                              </a>
-                            </li>}
-                        </ul>
-                      </nav>
-                    </div>
             </div>
+            {paginacion && <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Pagination pages={paginacion.totalPaginas}
+                            onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                    </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este descriptor?</Modal.Title>

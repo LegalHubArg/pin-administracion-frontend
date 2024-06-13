@@ -124,7 +124,7 @@ const Observaciones = props => {
           setSolicitud(data)
           setContentEditor(data.normaDocumento.normaDocumento)
           getAnexos(data.anexos)
-          console.log(data)
+          // console.log(data)
         }).catch(e => { throw e })
         await ApiPinPost('/api/v1/boletin-oficial/traerArchivoBucketS3', { nombre: data.normaArchivoOriginalS3Key }, token).then(res => {
           let blob = b64toBlob(res.data, 'application/pdf')
@@ -336,7 +336,7 @@ const Observaciones = props => {
   
       for (let i = 0; i < dbAnexos.length; i++) {
         await ApiPinPost('/api/v1/boletin-oficial/traerArchivoBucketS3', { nombre: dbAnexos[i].normaAnexoArchivoS3Key }, token).then((res) => {
-          console.log(res)
+          // console.log(res)
           let blob = b64toBlob(res.data, 'application/pdf')
           let blobUrl = URL.createObjectURL(blob);
           anexosAux.push({ url: blobUrl, nombre: dbAnexos[i].normaAnexoArchivo })
@@ -619,7 +619,7 @@ const Observaciones = props => {
     }
   
     useEffect(() => {
-      console.log(contentEditor)
+      // console.log(contentEditor)
     }, [contentEditor])
   
   
@@ -673,7 +673,6 @@ const Observaciones = props => {
       }
   
       let token = localStorage.getItem("token");
-      console.log(body)
       await ApiPinPost('/api/v1/boletin-oficial/normas/norma/editar/digitalizacion', body, token).then(res => {
         console.log('Actualizo...')
         window.location.reload();

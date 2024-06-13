@@ -17,6 +17,7 @@ const Usuarios = props => {
     const [error, setError] = useState(false) //Flag de error de la página
     if (error) throw error //Lo catchea el ErrorBoundary
     const [buscador, setBuscador] = useState('')
+    const [totalUsuarios, setTotalUsuarios] = useState(null)
 
     const [paginacion, setPaginacion] = useState({
         paginaActual: 1,
@@ -112,6 +113,7 @@ const Usuarios = props => {
             await ApiPinPost(`/api/v1/boletin-oficial/usuarios`, body, localStorage.getItem("token"))
                 .then((res) => {
                     setUsuarios(res.data.usuarios)
+                    setTotalUsuarios(res.data.total)
                     setPaginacion({ ...paginacion, totalPaginas: res.data.totalPaginas })
                 })
         }
@@ -346,6 +348,7 @@ const Usuarios = props => {
 
                 {usuarios && usuarios.length > 0 &&
                     <div className="d-flex flex-column align-items-center">
+                        <p>Cantidad total de usuarios: {totalUsuarios}</p>
                         <table className="table table-bordered table-striped" style={{ fontSize: 14 }}>
                             <thead>
                                 <tr>

@@ -74,6 +74,7 @@ const Front = props => {
       setLoadingPublicacion(false)
       setShow(false)
       setOperacionCompletada(true)
+      window.location.reload()
     }
     catch (e) {
       let mensajeError = e?.data?.mensaje ? e.data.mensaje : "Ocurrió un error al intentar publicar la norma."
@@ -91,6 +92,7 @@ const Front = props => {
       await ApiPinPost('/api/v1/sdin/norma/borrar-publicacion', body, localStorage.getItem('token'))
       setShowConfirmacion(false)
       setBorradoCorrectamente(true)
+      window.location.reload()
     }
     catch (e) {
     }

@@ -8,6 +8,8 @@ import { FaCheck, FaEdit, FaEllipsisV, FaMinus, FaPlus, FaTrash } from 'react-ic
 import { Modal } from 'react-bootstrap';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import './JerarquiaTemas.css';
+import { Pagination } from '@gcba/obelisco'
+
 
 const Jerarquia = props => {
     const [jerarquia, setJerarquia] = useState([])
@@ -20,11 +22,43 @@ const Jerarquia = props => {
     const [formVistaTabla, setFormVistaTabla] = useState({
         idTema: null, idTemaHijo: null
     })
-    const [errorTemaHijo,setErrorTemaHijo] = useState("")
+    const [errorTemaHijo, setErrorTemaHijo] = useState("")
+    const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getJerarquia()
+        }
+    }, [paginacion])
+
     const getJerarquia = async () => {
         try {
-            const { data: { data } } = await ApiPinGet('/api/v1/sdin/temas/jerarquia', localStorage.getItem('token'))
-            setJerarquia(data)
+            const { data: { jerarquia, totalJerarquia } } = await ApiPinGet(`/api/v1/sdin/temas/jerarquia?paginaActual=${paginacion.paginaActual}&limite=${paginacion.limite}`, localStorage.getItem('token'))
+            setJerarquia(jerarquia)
+            let auxPaginacion = paginacion;
+            // console.log(totalJerarquia)
+            auxPaginacion.totalPaginas = Math.ceil(totalJerarquia / auxPaginacion.limite);
+            auxPaginacion.botones = [];
+            for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                auxPaginacion.botones.push(i)
+            }
+            setPaginacion({ ...auxPaginacion })
         }
         catch (err) { }
     }
@@ -34,27 +68,29 @@ const Jerarquia = props => {
             idUsuario: JSON.parse(localStorage.getItem('perfiles'))[0].idUsuario
         }
         try {
-            const { data: { temas } } = await ApiPinPost('/api/v1/sdin/temas', body, localStorage.getItem('token'))
+            const { data: { temas, totalTemas } } = await ApiPinPost('/api/v1/sdin/temas', body, localStorage.getItem('token'))
             setTemas(temas)
+            setTotalResultados(totalTemas)
         }
         catch (err) { }
     }
+
 
     const handleAgregarTema = async (e) => {
         e.preventDefault();
         if (!formAgregarTema.idTema) return;
         setLoading(true)
         try {
-                let body = {
-                    usuario: localStorage.getItem('user_cuit'),
-                    idUsuario: JSON.parse(localStorage.getItem('perfiles'))[0].idUsuario,
-                    idTemaHijo: formAgregarTema.idTema,
-                    idTema: modalAgregarHijo.data.idTema
-                }
-                await ApiPinPost('/api/v1/sdin/temas/jerarquia/crear', body, localStorage.getItem('token'))
+            let body = {
+                usuario: localStorage.getItem('user_cuit'),
+                idUsuario: JSON.parse(localStorage.getItem('perfiles'))[0].idUsuario,
+                idTemaHijo: formAgregarTema.idTema,
+                idTema: modalAgregarHijo.data.idTema
+            }
+            await ApiPinPost('/api/v1/sdin/temas/jerarquia/crear', body, localStorage.getItem('token'))
                 .then(_ => window.location.reload())
                 .catch(error => { throw error })
-            }
+        }
         catch (error) {
             setLoading(false)
         }
@@ -73,8 +109,9 @@ const Jerarquia = props => {
                 .then(async _ => {
                     await getJerarquia();
                     setFormVistaTabla({
-                        idTema:"",
-                        idTemaHijo:""})
+                        idTema: "",
+                        idTemaHijo: ""
+                    })
                     setLoading(false)
                 })
                 .catch(error => { throw error })
@@ -239,7 +276,7 @@ const Jerarquia = props => {
                                                             onChange={(e) => handleFormVistaTabla(e)}>
                                                             <option value={""} hidden></option>
                                                             {temas && temas.map(n =>
-                                                                <option key={'org-' + n.idTema} value={n.idTema}>{n.idTema+ " - " + n.tema}</option>
+                                                                <option key={'org-' + n.idTema} value={n.idTema}>{n.idTema + " - " + n.tema}</option>
                                                             )}
                                                         </select>
                                                     </div>
@@ -264,6 +301,7 @@ const Jerarquia = props => {
                                 </div>
                             </div>
                         </div>
+                        <p>Resultados ({totalResultados}): </p>
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -289,6 +327,10 @@ const Jerarquia = props => {
                     </div>
                 )}
             </div>
+                {paginacion && jerarquia?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+            <Pagination pages={paginacion.totalPaginas}
+                onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+        </div>}
             <Modal show={modalBorrar?.show} onHide={() => setModalBorrar({ show: false, data: null })}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este ítem?</Modal.Title>
@@ -312,9 +354,10 @@ const Jerarquia = props => {
                     <div className="form-group">
                         <label for="temas">Tema</label>
                         <select className="custom-select" id="idTema" name="idTema"
-                            value={formAgregarTema.idTema !== null ? formAgregarTema.idTema : -1} onChange={(e) => 
-                                {handleFormAgregar(e)
-                                setErrorTemaHijo(e.target.value)}}>
+                            value={formAgregarTema.idTema !== null ? formAgregarTema.idTema : -1} onChange={(e) => {
+                                handleFormAgregar(e)
+                                setErrorTemaHijo(e.target.value)
+                            }}>
                             <option value={-1} hidden></option>
                             {temas && temas.map(n =>
                                 <option key={'repa-' + n.idTema} value={n.idTema}>{n.tema}</option>
@@ -331,7 +374,7 @@ const Jerarquia = props => {
                         Volver
                     </button>
                     <button className="btn btn-primary" onClick={e => handleAgregarTema(e)}
-                        disabled={!formAgregarTema.idTema | modalAgregarHijo?.data?.idTema == errorTemaHijo }>
+                        disabled={!formAgregarTema.idTema | modalAgregarHijo?.data?.idTema == errorTemaHijo}>
                         Confirmar
                     </button>
                 </Modal.Footer>

@@ -511,6 +511,7 @@ const CrearBoletin = props => {
                                     aria-describedby="date-help"
                                     value={form.fechaPublicacion}
                                     onChange={(e) => handleFormChange(e)}
+                                    required
                                 />
                             </div>
                             <div style={{ marginBlock: "2em" }}>

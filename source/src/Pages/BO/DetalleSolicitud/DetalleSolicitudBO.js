@@ -127,6 +127,7 @@ const DetalleSolicitudBO = props => {
       let token = localStorage.getItem("token");
       await ApiPinPost('/api/v1/boletin-oficial/normas/norma', body, token).then(res => {
         data = res.data.data[0]
+        console.log(data)
         setSolicitud(data)
         setContentEditor(data.normaDocumento.normaDocumento)
         getAnexos(data.anexos)
@@ -837,8 +838,7 @@ const DetalleSolicitudBO = props => {
   if (isLoading) {
     return (<Spinner />)
   }
-  else {
-    if (solicitud.idNormasEstadoTipo === 0) {
+  else if (solicitud?.idNormasEstadoTipo === 0) {
       return (
         <>
           <header className="pt-4 pb-3 mb-4">
@@ -863,9 +863,9 @@ const DetalleSolicitudBO = props => {
             <div className="container responsive">
               <div className="main-grid">
                 <div className="documentos">
-                  {
+                  {/* {
                     (solicitud.normaDocumento.hasOwnProperty('normaDocumento')) && mostrarEditor(solicitud.normaDocumento)
-                  }
+                  } */}
                   <div>
                   </div>
                   <div className="accordion" id="accordionExample">
@@ -990,7 +990,7 @@ const DetalleSolicitudBO = props => {
         </>
       );
     }
-    else
+    else {
       return (
         <>
           <header className="pt-4 pb-3 mb-4">
@@ -1337,7 +1337,7 @@ const DetalleSolicitudBO = props => {
             <Modal.Header>
               <Modal.Title>Eliminar Solicitud</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Está seguro que desae eliminar la norma #{solicitud.normaAcronimoReferencia} ?.</Modal.Body>
+            <Modal.Body>¿Está seguro que desea eliminar la norma #{solicitud.normaAcronimoReferencia}?.</Modal.Body>
             <Modal.Footer>
               <Button className="btn btn-link" onClick={handleClose} data-dismiss="modal">
                 Cancelar
@@ -1358,9 +1358,7 @@ const DetalleSolicitudBO = props => {
           </Modal>
         </>
       );
-
   }
-
-};
+}
 
 export default DetalleSolicitudBO;

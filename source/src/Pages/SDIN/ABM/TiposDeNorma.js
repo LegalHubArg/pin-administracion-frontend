@@ -8,6 +8,7 @@ import { FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import moment from 'moment';
 import TiposDeNorma from '../../../Controllers/SDIN/TiposDeNormaController';
+import { Pagination } from '@gcba/obelisco'
 
 const TemasABM = props => {
     const [tiposNormaABM, setTiposNormaABM] = useState([])
@@ -18,7 +19,20 @@ const TemasABM = props => {
     const [tipoBorrar, setTipoBorrar] = useState(null)
     const [ramas, setRamas] = useState([])
     const [ramaNorma, setRamaNorma] = useState()
-    
+    const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
     /* const [idRama, setIdRama] = useState(''); */
 
     const [form, setForm] = useState({
@@ -46,13 +60,13 @@ const TemasABM = props => {
                 setForm({ ...form, nomenclatura: value })
                 break;
             case 'sigla':
-                setForm({...form, sigla: value})
+                setForm({ ...form, sigla: value })
                 break;
             case 'orden':
-                setForm({...form, orden: value})
+                setForm({ ...form, orden: value })
                 break;
-            }
-}
+        }
+    }
 
     const handleFormEdicion = (e) => {
         let value = e.target.value;
@@ -69,18 +83,37 @@ const TemasABM = props => {
             case 'orden':
                 setFormEdicion({ ...formEdicion, orden: value })
                 break;
-            }
         }
-    
+    }
+
 
     const getTiposNormaABM = async () => {
-        await ApiPinGet('/api/v1/sdin/normas/tipos',localStorage.getItem("token"))
-            .then((res) => {
-                setTiposNormaABM(res.data.data)
-                console.log(res.data.data)
-            })
-            .catch()
+        if (paginacion.paginaActual && paginacion.limite) {
+            await ApiPinGet(`/api/v1/sdin/normas/tipos?paginaActual=${paginacion?.paginaActual}&limite=${paginacion?.limite}`, localStorage.getItem("token"))
+                .then((res) => {
+                    setTiposNormaABM(res.data.data)
+                    setTotalResultados(res.data.total)
+                    let auxPaginacion = paginacion;
+                    auxPaginacion.totalPaginas = Math.ceil(res.data.total / auxPaginacion.limite);
+                    auxPaginacion.botones = [];
+                    for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                        auxPaginacion.botones.push(i)
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
     }
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getTiposNormaABM()
+        }
+    }, [paginacion])
 
 
     const handleSubmit = async (e) => {
@@ -100,11 +133,11 @@ const TemasABM = props => {
                     normaTipo: "",
                     nomenclatura: "",
                     sigla: "",
-                     orden: null
+                    orden: null
                 })
                 getTiposNormaABM()
             })
-            .catch(error => 
+            .catch(error =>
                 setShowExiste(true))
         setLoading(false)
     }
@@ -245,6 +278,7 @@ const TemasABM = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {
                     <table className="table table-bordered">
                         <thead>
@@ -254,11 +288,12 @@ const TemasABM = props => {
                                 <th>Nomenclatura</th>
                                 <th>Sigla</th>
                                 <th>Orden</th>
+                                <th>Acciones</th>
                                 {habilitarEdicion && <th></th>}
                             </tr>
                         </thead>
                         <tbody>
-                        {tiposNormaABM.map((elem) => (<tr>
+                            {tiposNormaABM.map((elem) => (<tr>
                                 {habilitarEdicion && formEdicion.idNormaTipo === elem.idNormaTipo ? <>
                                     <td>{elem.idNormaTipo}</td>
                                     <td><input type="text" className="form-control form-control-sm" name="normaTipo" id="normaTipo"
@@ -304,6 +339,12 @@ const TemasABM = props => {
                     </table>
                 }
             </div>
+
+            {paginacion && tiposNormaABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination pages={paginacion.totalPaginas}
+                    onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+            </div>}
+
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar este tema?</Modal.Title>

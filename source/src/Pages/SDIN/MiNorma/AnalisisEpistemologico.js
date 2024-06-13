@@ -127,7 +127,7 @@ const AnalisisEpistemologico = ({ norma }) => {
                             ['observaciones']: data[0].observaciones,
                             ['idAnexoDJ']: data[0].idAnexoDJ
                         })
-                        if (data[0].formulario1) setDeshabilitados([2, 3, 4, 5, 6, 7])
+                        if (data[0].formulario1) setDeshabilitados([2, 3, 4, 5, 6])
                         if (data[0].formulario2 && data[0].formulario3 && data[0].formulario5) setDeshabilitados([1, 4, 6, 7])
                     }
                 })

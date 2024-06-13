@@ -207,7 +207,6 @@ const BMSeccion = props => {
     setLoading(false)
   }, []) */
 
-console.log(form)
   useEffect(async () => {
     await getSecciones().catch(e => setError(e.data.mensaje))
   }, [])
@@ -230,7 +229,7 @@ console.log(form)
                       data-toggle="collapse"
                       data-target="#collapseOne"
                     >
-                      Nuevo Sección
+                      Nueva Sección
                     </button>
                     <div id="collapseOne" class="collapse" data-parent="#accordion">
                       <div class="card-body">

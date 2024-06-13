@@ -6,7 +6,7 @@ import { ApiPinGet, ApiPinPost } from '../../Helpers/ApiComunicator'
 import Spinner from '../../Components/Spinner/Spinner';
 import './FirmarBoletin.css';
 import moment from 'moment';
-import { FaRegWindowRestore, FaTimes } from 'react-icons/fa';
+import { FaRegWindowRestore, FaTimes, FaRegCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import { rutasBO } from '../../routes';
 const b64toBlob = require('b64-to-blob');
@@ -29,7 +29,16 @@ const GenerarBoletin = props => {
     const [errorCargaManual, setErrorCargaManual] = useState(null)
     const [extensionesPermitidas, setExtensionesPermitidas] = useState()
     const [modalError, setModalError] = useState({ show: false, mensaje: '' })
-    const [limiteArchivo,setLimiteArchivo] = useState()
+    const [limiteArchivo, setLimiteArchivo] = useState()
+    const [modalFirma, setModalFirma] = useState({
+        show: false,
+        loading: false,
+        mensajes: [],
+    })
+    const [progreso, setProgreso] = useState({
+        show: false,
+        mensajes: []
+    })
 
     const [datosSesion, setDatosSesion] = useState({
         usuario: localStorage.getItem("user_cuit"),
@@ -38,18 +47,18 @@ const GenerarBoletin = props => {
     });
 
     const traerExtensiones = async () => {
-        const { data: {data} } = await ApiPinGet('/api/v1/auth/extensiones', localStorage.token);
-    
+        const { data: { data } } = await ApiPinGet('/api/v1/auth/extensiones', localStorage.token);
+
         setExtensionesPermitidas(data)
     }
-    const traerLimiteArchivo = async () =>{
+    const traerLimiteArchivo = async () => {
         await ApiPinGet('/api/v1/auth/limiteArchivo', localStorage.token)
-          .then(res=>{
-            setLimiteArchivo(parseInt(res.data.data))
-          })
-          .catch(err=>{
-            throw Error(String(err))
-          })
+            .then(res => {
+                setLimiteArchivo(parseInt(res.data.data))
+            })
+            .catch(err => {
+                throw Error(String(err))
+            })
         //setLimiteArchivo(data)
     }
 
@@ -143,9 +152,11 @@ const GenerarBoletin = props => {
 
     const handleFirmaGEDO = async (e) => {
         e.preventDefault();
+        setLoading(true)
         setErrorFirmaGEDO(null)
         setErrorCargaManual(null)
-        setLoading(true)
+        // saco el modal para no perder tiempo configurandolo
+        //setModalFirma({...modalFirma, show:true, loading: true})
         try {
             let token = localStorage.getItem("token");
             let body = {
@@ -155,14 +166,26 @@ const GenerarBoletin = props => {
                 archivoBoletin: boletinDisponible,
                 archivosSeparata: separatasDisponibles
             };
-            await ApiPinPost('/api/v1/boletin-oficial/boletin/firmarGEDO', body, token)
-                .then(res => {
-                    // console.log(res)
+            let response = await ApiPinPost('/api/v1/boletin-oficial/boletin/firmarGEDO', body, token)
+                .then((resp) => {
+                    if (resp.data.exito) {
+                        navigate('/bo/generar-boletin', { replace: true })
+                    }
+
                 })
-                .catch(err => {
-                    throw err;
+                .catch(e => {
+                    setLoading(false)
+                    console.log(e)
+                    setErrorFirmaGEDO(e?.data?.mensaje)
+                    setProgreso({ ...progreso, show: true, mensajes: e?.data?.progreso })
                 })
-            setFirmaExitosa(true)
+
+            /* setModalFirma({...modalFirma, show: true, loading: false, mensajes: data.progreso})
+            if(data.exito) {
+                setFirmaExitosa(true)
+                setLoading(false)
+            } */
+            
         }
         catch (error) {
             setLoading(false)
@@ -359,6 +382,30 @@ const GenerarBoletin = props => {
                             disabled={cargandoDocumentosDisponibles}>
                             Firmar Documentos
                         </button>
+                        {progreso.show && <>
+                            <div className="container responsive">
+                                <div className="main-grid">
+                                    <div className="accordion" id="accordionExample">
+                                        <div className="card">
+                                            <button
+                                                className="card-header collapsed card-link"
+                                                data-toggle="collapse"
+                                                data-target="#collapseProgreso"
+                                            >
+                                                Ver mensajes de progreso
+                                            </button>
+                                            <div id="collapseProgreso" className="collapse" data-parent="#accordionExample">
+                                                <div className="card-body">
+                                                    {progreso.mensajes && progreso.mensajes.length > 0 && progreso.mensajes.map((m, index) => {
+                                                        return <p key={index} style={index === progreso.mensajes.length - 1 ? {color:"red"} : null}>{m} {index === progreso.mensajes.length - 1 ? <FaExclamationCircle /> : <FaRegCheckCircle />}</p>
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>}
                         {errorFirmaGEDO && <div class="alert-wrapper">
                             <div class="alert alert-danger" role="alert">
                                 <p>{errorFirmaGEDO}</p>
@@ -441,6 +488,22 @@ const GenerarBoletin = props => {
                 <Modal.Body>
                     <div class="alert alert-danger" role="alert">
                     <p>{modalError?.mensaje}</p>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer></Modal.Footer>
+                </Modal>
+                
+                <Modal show={modalFirma?.show} onHide={() => setModalFirma({ show: false, mensajes: [] })}>
+                <Modal.Header>
+                    <Modal.Title>Firma del Boletín Oficial</Modal.Title>
+                    <i className='bx bx-x bx-sm' type="button" onClick={() => setModalFirma({ show: false, mensajes: [] })}></i>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='container'>
+                        {modalFirma?.loading && <Spinner></Spinner>}
+                        {modalFirma?.mensajes.map(m => {
+                            return <p>{m}<br /></p>
+                        })}
                     </div>
                 </Modal.Body>
                 <Modal.Footer></Modal.Footer>

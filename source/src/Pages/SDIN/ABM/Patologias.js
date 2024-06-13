@@ -7,6 +7,7 @@ import Spinner from '../../../Components/Spinner/Spinner';
 import { FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import moment from 'moment';
+import { Pagination } from '@gcba/obelisco'
 
 const PatologiasABM = props => {
     const [patologiasABM, setPatologiasABM] = useState([])
@@ -15,6 +16,21 @@ const PatologiasABM = props => {
     const [showModal, setShowModal] = useState(false)
     const [showExiste, setShowExiste] = useState(false)
     const [tipoBorrar, setTipoBorrar] = useState(null)
+    const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
+
 
     const [form, setForm] = useState({
         idPatologiaNormativa: null,
@@ -32,10 +48,10 @@ const PatologiasABM = props => {
             case 'nombre':
                 setForm({ ...form, nombre: value })
                 break;
-                
-            } 
-        console.log("valores=== ", e.target.value )
-}
+
+        }
+        console.log("valores=== ", e.target.value)
+    }
 
     const handleFormEdicion = (e) => {
         let value = e.target.value;
@@ -43,22 +59,38 @@ const PatologiasABM = props => {
             case 'nombre':
                 setFormEdicion({ ...formEdicion, nombre: value })
                 break;
-            }
         }
-    
+    }
+
 
     const getPatologiasABM = async () => {
         let body = {
             usuario: localStorage.getItem("user_cuit"),
             idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            ...paginacion
         }
         await ApiPinPost('/api/v1/sdin/abm/patologias/traer', body, localStorage.getItem("token"))
             .then((res) => {
                 setPatologiasABM(res.data.data)
-                console.log("quiero saber: ", res.data.data)
+                setTotalResultados(res.data.totalPatologias)
+                let auxPaginacion = paginacion;
+                auxPaginacion.totalPaginas = Math.ceil(res.data.totalPatologias / auxPaginacion.limite);
+                auxPaginacion.botones = [];
+                for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                    auxPaginacion.botones.push(i)
+                }
             })
             .catch()
     }
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getPatologiasABM()
+        }
+    }, [paginacion])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -76,7 +108,7 @@ const PatologiasABM = props => {
                 getPatologiasABM()
             })
             .catch(error => {
-            setShowExiste(true)
+                setShowExiste(true)
             })
         setLoading(false)
     }
@@ -127,7 +159,7 @@ const PatologiasABM = props => {
             nombre: elem.nombre
         })
         if (habilitarEdicion) {
-            setFormEdicion({ idPatologiaNormativa: null, nombre: ""  })
+            setFormEdicion({ idPatologiaNormativa: null, nombre: "" })
         }
         setHabilitarEdicion(!habilitarEdicion)
     }
@@ -153,13 +185,13 @@ const PatologiasABM = props => {
                                     data-toggle="collapse"
                                     data-target="#collapseOne"
                                 >
-                                    Nueva Patologia
+                                    Nueva Patología
                                 </button>
                                 <div id="collapseOne" class="collapse" data-parent="#accordion">
                                     <div class="card-body">
                                         <form className="form-wrapper d-flex align-items-center" onSubmit={e => handleSubmit(e)}>
                                             <div class="form-group" style={{ width: "60%" }}>
-                                                <label for="nombre">Nombre de la Patologia</label>
+                                                <label for="nombre">Nombre de la Patología</label>
                                                 <input
                                                     type="text"
                                                     className="form-control"
@@ -177,6 +209,7 @@ const PatologiasABM = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {patologiasABM && patologiasABM.length > 0 &&
                     <table className="table table-bordered">
                         <thead>
@@ -221,7 +254,12 @@ const PatologiasABM = props => {
                         </tbody>
                     </table>
                 }
+
             </div>
+                {paginacion && patologiasABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination pages={paginacion.totalPaginas}
+                        onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar esta patologia?</Modal.Title>

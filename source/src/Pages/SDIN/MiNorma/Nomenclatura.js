@@ -55,6 +55,8 @@ const Nomenclatura = props => {
   const [analistas, setAnalistas] = useState()
   const [historial, setHistorial] = useState([])
   const [modalError, setModalError] = useState({ show: false, mensaje: '' })
+  const [archivoS3tipo,setArchivoS3tipo] = useState(false)
+  const [textoActualizadoS3tipo,setTextoActualizadoS3tipo] = useState(false)
   //const [edicionTextoActualizado, setEdicionTextoActualizado] = useState(false)
 
   const [loadHistorial, setLoadHistorial] = useState(false)
@@ -144,6 +146,10 @@ const Nomenclatura = props => {
       })
 
       if (data.archivoS3) {
+        let extension = data.archivoS3.split('.').pop().toLowerCase();
+        if (extension == 'doc'){
+          setArchivoS3tipo(true)
+        }
         await ApiPinPost('/api/v1/sdin/traerArchivoNorma', { nombre: data.archivoS3 }, token).then(res => {
           let blob = b64toBlob(res.data, 'application/pdf')
           let blobUrl = URL.createObjectURL(blob);
@@ -154,6 +160,10 @@ const Nomenclatura = props => {
       if (data.archivoTextoActualizadoS3) {
         // Si el archivo ya esta cargado, edito el registro, si no, lo creo
         //setEdicionTextoActualizado(true)
+        let extension = data.archivoTextoActualizadoS3.split('.').pop().toLowerCase();
+        if (extension == 'doc'){
+          setTextoActualizadoS3tipo(true)
+        }
         await ApiPinPost('/api/v1/sdin/traerArchivoNorma', { nombre: data.archivoTextoActualizadoS3 }, token).then(res => {
           let blob = b64toBlob(res.data, 'application/pdf')
           let blobUrl = URL.createObjectURL(blob);
@@ -164,6 +174,12 @@ const Nomenclatura = props => {
       if (data.anexos && data.anexos.length > 0) {
         let auxAnexos = [...data.anexos];
         for (let i = 0; i < auxAnexos.length; i++) {
+          const extension = auxAnexos[i].archivoS3.split('.').pop().toLowerCase();
+          if (extension == 'doc'){
+            auxAnexos[i].isDoc = true
+          }else{
+            auxAnexos[i].isDoc = false
+          }
           await ApiPinPost('/api/v1/sdin/traerArchivoNorma', { nombre: auxAnexos[i].archivoS3 }, token).then(res => {
             let blob = b64toBlob(res.data, 'application/pdf')
             let blobUrl = URL.createObjectURL(blob);
@@ -183,7 +199,6 @@ const Nomenclatura = props => {
       // throw error
     }
   }
-
   const traerExtensiones = async () => {
     const { data: { data } } = await ApiPinGet('/api/v1/auth/extensiones', localStorage.token);
     setExtensionesPermitidas(data)
@@ -712,7 +727,7 @@ const Nomenclatura = props => {
                       Texto Original
                     </button>
                     <div className="collapse" id="collapseOne" data-parent="#accordion">
-                      <div className="card-body" style={{ whiteSpace: "pre-wrap" }}>
+                      <div className="card-body">
                         <div
                           dangerouslySetInnerHTML={{
                             __html: decode(norma?.textoOriginal?.toString()).replace(
@@ -754,6 +769,7 @@ const Nomenclatura = props => {
                     </div>
                   </div>
 
+                  {norma?.checkTA === 1 ?
                   <div className="card">
                     <button className="card-header card-link mb-1 collapsed"
                       data-toggle="collapse" data-target="#collapseSix">
@@ -767,8 +783,8 @@ const Nomenclatura = props => {
                       }
                     </div>
                   </div>
-
-                  {norma && contenidoEditorTextoActualizado != "" &&
+                  :null}
+                  {norma && norma?.checkTA === 1 && contenidoEditorTextoActualizado != "" &&
 
                     <div className="card">
 
@@ -808,7 +824,7 @@ const Nomenclatura = props => {
                     </div>
                   }
 
-                  {norma && norma.archivoTextoActualizadoS3 && norma.archivoTextoActualizado &&
+                  {norma && norma.checkTA === 1 && norma.archivoTextoActualizadoS3 && norma.archivoTextoActualizado &&
                     <div className="card">
                       <button
                         className="card-header collapsed card-link"
@@ -821,7 +837,7 @@ const Nomenclatura = props => {
                         <div className="card-body documento-vista">
                           <div style={{ height: "85%" }}>
                             {norma.archivoTextoActualizado && <a className="ml-2" href={textoActualizado} download={norma.archivoTextoActualizado}>{norma.archivoTextoActualizado}</a>}
-                            {textoActualizado ?
+                            {textoActualizado && !textoActualizadoS3tipo ?
                               <>
                                 <iframe className="doc-view" id="asd" src={textoActualizado} type="application/pdf">No document</iframe>
                                 <div className="btn btn-link btn-sm" maxWidth="200px" style={{ marginLeft: "1em" }} onClick={() => window.open(textoActualizado)}>
@@ -855,7 +871,7 @@ const Nomenclatura = props => {
                         <div className="card-body documento-vista">
                           <div style={{ height: "85%" }}>
                             {norma.archivo && <a className="ml-2" href={documentoOriginal} download={norma.archivo}>{norma.archivo}</a>}
-                            {documentoOriginal ?
+                            {documentoOriginal && !archivoS3tipo ?
                               <>
                                 <iframe className="doc-view" id="asd" src={documentoOriginal} type="application/pdf">No document</iframe>
                                 <div className="btn btn-link btn-sm" maxWidth="200px" style={{ marginLeft: "1em" }} onClick={() => window.open(documentoOriginal)}>
@@ -887,11 +903,17 @@ const Nomenclatura = props => {
                           <div className="card-body documento-vista">
                             <div style={{ height: "85%" }}>
                               <a className="ml-2" href={elem.blob} download={elem.archivo}>{elem.archivo}</a>
-                              <iframe className="doc-view" id="asd" src={elem.blob} type="application/pdf">No document</iframe>
-                              <div className="btn btn-link btn-sm ml-2" maxWidth="200px" onClick={() => window.open(elem.blob)}>
-                                Abrir en pestaña nueva
-                                <FaRegWindowRestore style={{ marginLeft: "5px" }} />
-                              </div>
+                              {!elem.isDoc ?
+                                <>
+                                  <iframe className="doc-view" id="asd" src={elem.blob} type="application/pdf">No document</iframe>
+                                  <div className="btn btn-link btn-sm ml-2" maxWidth="200px" onClick={() => window.open(elem.blob)}>
+                                    Abrir en pestaña nueva
+                                    <FaRegWindowRestore style={{ marginLeft: "5px" }} />
+                                  </div>
+                                </>:
+                                <>
+                                  <div className="m-3">No es posible mostrar este documento...</div>
+                                </>}
                               <button className="btn btn-danger btn-sm mr-2" style={{ float: "right" }} onClick={(e) => borrarAnexo(e, elem.idAnexoSDIN)}>
                                 Borrar
                                 <FaTrash style={{ marginLeft: "5px" }} />
@@ -927,6 +949,7 @@ const Nomenclatura = props => {
                       </div>
                     </div>
                   }
+                  {norma?.checkTA === 1 ?
                   <div className="form-group bg-light p-4 m-1 row">
                     <div className="col">
                       <label>Cargar Texto Actualizado</label>
@@ -934,6 +957,7 @@ const Nomenclatura = props => {
                     </div>
                     {nuevoTextoActualizado?.base64 && <button className="btn btn-primary col mt-2" onClick={(e) => guardarTextoActualizado(e)}>Guardar</button>}
                   </div>
+                  :null}
                   <div className="form-group bg-light p-4 m-1 row">
                     <div className="col">
                       <label>Cargar Documento Original</label>

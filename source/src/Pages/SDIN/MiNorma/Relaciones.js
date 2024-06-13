@@ -9,6 +9,8 @@ import { ModalBuscador } from '../../../Components/Modales/ModalBuscadorDigesto'
 
 //HTML decode
 import { decode } from 'html-entities';
+import { Pagination } from '@gcba/obelisco'
+
 
 const Relaciones = ({ norma }) => {
   const navigate = useNavigate();
@@ -20,6 +22,20 @@ const Relaciones = ({ norma }) => {
   const [loadingModalEdicion, setLoadingModalEdicion] = useState(false)
   const [showModalEliminar, setShowModalEliminar] = useState(false)
   const [metaNormaActiva, setMetaNormaActiva] = useState({})
+  const [totalResultados, setTotalResultados] = useState(null)
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
 
   const initForm = {
     idNormaDestino: null,
@@ -153,6 +169,12 @@ const Relaciones = ({ norma }) => {
         .then(res => {
           setLoading(false)
           setAcciones(res.data.relaciones)
+          let auxPaginacion = paginacion;
+                auxPaginacion.totalPaginas = Math.ceil(res.data.total / auxPaginacion.limite);
+                auxPaginacion.botones = [];
+                for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                    auxPaginacion.botones.push(i)
+                }
         })
         .catch((err) => {
           throw err
@@ -163,6 +185,15 @@ const Relaciones = ({ norma }) => {
       //console.log(e)
     }
   }
+
+  useEffect(async () => {
+    if (paginacion.cambiarPagina === true) {
+        let auxPaginacion = paginacion;
+        auxPaginacion.cambiarPagina = false;
+        setPaginacion({ ...auxPaginacion })
+        await traerRelaciones()
+    }
+}, [paginacion])
 
   const traerRelacionesDeLaNorma = async () => {
     setLoading(true)

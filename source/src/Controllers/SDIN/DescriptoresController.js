@@ -20,13 +20,13 @@ const Descriptores = props => {
                     </nav>
                 </div>
             </header>
-            <div className="container">
+            <div className="container responsive mb-5">
                 <header>
                     <h1>Descriptores</h1>
                 </header>
                 <hr />
-            </div>
             <VistaDescriptores />
+            </div>
         </Layout>
 
     );

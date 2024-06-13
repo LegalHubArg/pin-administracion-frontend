@@ -161,7 +161,6 @@ const AnalisisDocumental = ({ norma }) => {
       usuario: localStorage.getItem('user_cuit'),
       idTemas: (temasNorma.length > 0) ? [temasNorma.map(t => t.idTema)] : (null)
     }
-    console.log(body)
     /* try {
       let token = localStorage.getItem("token");
       await ApiPinPost('/api/v1/sdin/norma/temas', body, token).then((res) => {

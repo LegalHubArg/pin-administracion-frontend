@@ -7,6 +7,7 @@ import Spinner from '../../Components/Spinner/Spinner';
 import './IndiceTematico.css'
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 import { rutasSDIN } from '../../routes';
+import { decode } from "html-entities";
 
 const Temas = props => {
     const [isLoading, setLoading] = useState(false)
@@ -61,7 +62,7 @@ const Temas = props => {
 
     const getJerarquia = async () => {
         try {
-            const { data: { data } } = await ApiPinGet('/api/v1/sdin/temas/jerarquia', localStorage.getItem('token'))
+            const { data: { data } } = await ApiPinGet('/api/v1/sdin/temas/jerarquia/arbol', localStorage.getItem('token'))
             setJerarquia(data.map(n => ({ ...n, show: false })))
         }
         catch (err) { }
@@ -98,10 +99,15 @@ const Temas = props => {
 
                 let temasHijos = jerarquiaAux.filter(elem => elem.idTema === raiz.idTema).map(n => ({ idTema: n.idTemaHijo, tema: n.temaHijo, show: n.show }));
 
+                temasHijos.sort((a, b) => a.tema.localeCompare(b.tema))
                 arboles.push(
                     <div>
-                        <div className="tarjeta">{raiz.tema}
-                            <button className="btn btn-primary btn-sm" onClick={e => getChildren(e, raiz.idTema)}><FaArrowDown /></button>
+                        <div className="tarjeta">{decode(raiz.tema)}
+                            {temasHijos.length > 0 && ( // Verificar si hay hijos antes de mostrar el botón
+                                <button  className="btn btn-primary btn-sm" onClick={e => getChildren(e, raiz.idTema)}>
+                                    <FaArrowDown />
+                                </button>
+                            )}
                             {jerarquiaNormas && (jerarquiaNormas.length > 0) && 
                                 jerarquiaNormas.some((n) => n.idTema === raiz.idTema) ? (
                                     <button 
@@ -133,10 +139,15 @@ const Temas = props => {
         for (const child of children) {
 
             let temasHijos = jerarquiaAux.filter(elem => elem.idTema === child.idTema).map(n => ({ idTema: n.idTemaHijo, tema: n.temaHijo, show: n.show }));
+            temasHijos.sort((a, b) => a.tema.localeCompare(b.tema))
             if (child.show) {
                 nodos.push(<div style={{ paddingLeft: "2em" }}>
-                    <div className="tarjeta">{child.tema}
-                        <button className="btn btn-primary btn-sm" onClick={e => getChildren(e, child.idTema)}><FaArrowDown /></button>
+                    <div className="tarjeta">{decode(child.tema)}
+                        {temasHijos.length > 0 && ( // Verificar si hay hijos antes de mostrar el botón
+                            <button className="btn btn-primary btn-sm" onClick={e => getChildren(e, child.idTema)}>
+                                <FaArrowDown />
+                            </button>
+                        )}
                         {jerarquiaNormas && (jerarquiaNormas.length > 0) && 
                             jerarquiaNormas.some((n) => n.idTema === child.idTema) ? (
                                 <button 
@@ -150,12 +161,12 @@ const Temas = props => {
                     {normas && normas.idTema === child.idTema && normas.normas.map(n =>
                         <div className="tarjeta-norma">
                             <a href={"/sdin/" + rutasSDIN.ficha_norma.replace(':idNormaSDIN', n.idNormaSDIN)} target="_blank">
-                                {n?.normaTipo}&nbsp;N°{n?.normaNumero}
-                                {n.reparticion ? <>&nbsp;/&nbsp;{n.reparticion}</> : null}
-                                {n.organismo ? <>&nbsp;/&nbsp;{n.organismo}</> : null}
+                                {decode(n?.normaTipo)}&nbsp;N°{n?.normaNumero}
+                                {decode(n.reparticion) ? <>&nbsp;/&nbsp;{decode(n.reparticion)}</> : null}
+                                {decode(n.organismo) ? <>&nbsp;/&nbsp;{decode(n.organismo)}</> : null}
                                 {n.normaAnio ? <>&nbsp;/&nbsp;{n.normaAnio}</> : null}
                             </a>
-                            <div style={{ fontSize: 12 }}>{n?.normaSumario}</div>
+                            <div style={{ fontSize: 12 }}>{decode(n?.normaSumario)}</div>
                         </div>)}
                 </div>)
             }

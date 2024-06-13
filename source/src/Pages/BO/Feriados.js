@@ -29,7 +29,6 @@ const Feriados = props => {
 
     const handleForm = (e) => {
         let value = e.target.value;
-        console.log("esto:;;;" , e.target.name)
         switch (e.target.name) {
             case 'feriadoFecha':
                 setForm({ ...form, feriadoFecha: value })
@@ -38,7 +37,6 @@ const Feriados = props => {
                 setForm({ ...form, feriado: value })
                 break;
         }
-        console.log("datos:", e.target.value)
     }
 
     const handleFormEdicion = (e) => {
@@ -56,8 +54,8 @@ const Feriados = props => {
     const getFeriado = async () => {
         let body = {
             usuario: localStorage.getItem("user_cuit"),
-            idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
-            fechaAnio: "2022",
+            idUsuario: JSON.parse(localStorage.idUsuarioBO),
+            fechaAnio: moment().format('YYYY'),
         }
         await ApiPinPost('/api/v1/boletin-oficial/feriados', body, localStorage.getItem("token"))
             .then((res) => {
@@ -71,7 +69,7 @@ const Feriados = props => {
         setLoading(true);
         let body = {
             usuario: localStorage.getItem("user_cuit"),
-            idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            idUsuario: JSON.parse(localStorage.idUsuarioBO),
             feriadoFecha: form.feriadoFecha,
             feriado: form.feriado
         }
@@ -92,7 +90,7 @@ const Feriados = props => {
         setLoading(true)
         let body = {
             usuario: localStorage.getItem("user_cuit"),
-            idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            idUsuario: JSON.parse(localStorage.idUsuarioBO),
             idFeriado: id
         }
         await ApiPinPost('/api/v1/boletin-oficial/feriados/feriado/borrar', body, localStorage.getItem("token"))
@@ -245,7 +243,7 @@ const Feriados = props => {
             </div>
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
-                    <Modal.Title>Está seguro que desea eliminar esta repartición?</Modal.Title>
+                    <Modal.Title>¿Está seguro que desea eliminar este feriado?</Modal.Title>
                 </Modal.Header>
                 <Modal.Footer>
                     <button className="btn btn-link" onClick={() => setShowModal(false)}>

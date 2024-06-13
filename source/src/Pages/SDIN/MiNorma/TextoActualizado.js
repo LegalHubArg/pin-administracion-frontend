@@ -184,7 +184,6 @@ const TextoActualizado = props => {
         }
     
         let token = localStorage.getItem("token");
-        console.log(body)
         await ApiPinPost('/api/v1/boletin-oficial/normas/norma/editar/digitalizacion', body, token).then(res => {
           console.log('Actualizo...')
           window.location.reload();
@@ -209,7 +208,7 @@ const TextoActualizado = props => {
             data = res.data.data[0]
             setSolicitud(data)
             setContentEditor(data.normaDocumento.normaDocumento)
-            console.log(data)
+            // console.log(data)
           }).catch(e => { throw e })
           setLoading(false)
     
@@ -287,10 +286,6 @@ const TextoActualizado = props => {
     const handleSubmit = (e) => {
         e.preventDefault();
       }
-
-    useEffect(() => {
-        console.log(form)
-    }, [form])
 
     //Hook inicial
     useEffect(async () => {

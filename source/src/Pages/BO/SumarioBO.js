@@ -143,7 +143,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = {
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         idNormaSubtipo: subtipoNormaSeleccionado,
         idSumarioNormasTipo: idSumarioNormasTipo
       };
@@ -167,7 +167,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = { //Si le mando el idSeccion es porque es_poder=1
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         idReparticion: repaSeleccionada,
         idSumarioNormasTipo: idSumarioNormasTipo,
         idSeccion: idSeccion
@@ -301,7 +301,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = {
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         normaTipos: arrayTipos,
         idSeccion
       };
@@ -327,7 +327,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = {
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         subtiposNorma: array,
         idSumarioNormasTipo
       };
@@ -352,7 +352,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = {
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         reparticiones: array,
         idSumarioNormasTipo,
         idSeccion
@@ -379,7 +379,7 @@ const SumarioBO = props => {
       let token = localStorage.getItem("token");
       let body = {
         usuario: localStorage.getItem("user_cuit"),
-        idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+        idUsuario: JSON.parse(localStorage.idUsuarioBO),
         secciones
       };
       await ApiPinPost('/api/v1/boletin-oficial/sumario/secciones/ordenar', body, token)

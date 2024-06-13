@@ -407,7 +407,7 @@ const BuscarNormasBO = props => {
             let token = localStorage.getItem("token");
             await ApiPinPost('/api/v1/boletin-oficial/normas/subtipos', body, token)
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     setSubtipos(Array.from(res.data.data))
                 }).catch(function (error) {
                     setLoading(false)

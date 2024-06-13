@@ -481,31 +481,34 @@ const BuscarNormasBO = props => {
                                             </button>
                                         </Link>
                                     </td>
-                                    <td title="Ver anexos">
-                                        <div class="dropdown-container">
-                                            <div class="drowdown">
-                                                <button className="btn btn-link btn-sm"
-                                                    data-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
-                                                    <FaPaperclip />
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    {anexos && (anexos.length > 0) ? (
-                                                        (anexos.filter(a => a.idNorma === n.idNorma).length > 0) ? (
-                                                            (anexos.filter(a => a.idNorma === n.idNorma)).map(a =>
-                                                                <button class="dropdown-item btn-sm"
-                                                                    type="button"
-                                                                    onClick={() => mostrarAnexo(a)}
-                                                                >{a.normaAnexoArchivo}
-                                                                </button>
-                                                            ))
-                                                            : ('No hay anexos disponibles.'))
-                                                        : ('')}
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <td title="Ver Anexos">
+                                            {(anexos.length > 0) && (anexos.filter(a => a.idNorma === n.idNorma).length > 0) ?
+                                            (<>
+                                                    <div class="dropdown-container">
+                                                        <div class="drowdown">
+                                                            <button className="btn btn-link btn-sm"
+                                                                data-toggle="dropdown"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false"
+                                                                title="Anexos"
+                                                            >
+                                                                <FaPaperclip />
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                {(anexos.filter(a => a.idNorma === n.idNorma).length > 0) ?(anexos.filter(a => a.idNorma === n.idNorma)).map(a =>
+                                                                            <button class="dropdown-item btn-sm"
+                                                                                type="button"
+                                                                                onClick={() => mostrarAnexo(a)}
+                                                                            >{a.normaAnexoArchivo}
+                                                                            </button>
+                                                                        )
+                                                                        : ('No hay anexos disponibles.')
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </>
+                                            ):(<></>)}
                                     </td>
                                     <td>
                                         <div class="dropdown-container">
@@ -568,7 +571,7 @@ const BuscarNormasBO = props => {
         e.preventDefault()
         setForm({ ...initForm })
     }
-    console.log(paginacion)
+    // console.log(paginacion)
 
     function checkAll(e, normas) {
         e.preventDefault();

@@ -19,6 +19,7 @@ const AdminUsuarios = props => {
     const [error, setError] = useState(false) //Flag de error de la página
     const [usuarioDeshacer, setUsuarioDeshacer] = useState(null)
     const [aux, setAux] = useState(false)
+    const [totalResultados, setTotalResultados] = useState(null)
     if (error) throw error //Lo catchea el ErrorBoundary
 
     const [paginacion, setPaginacion] = useState({
@@ -110,10 +111,11 @@ const AdminUsuarios = props => {
         await ApiPinPost(`/api/v1/usuarios/sdin`, body, localStorage.getItem("token"))
             .then((res) => {
                 setUsuarios(res.data.data)
+                setTotalResultados(res.data.total)
                 setPaginacion({...paginacion, totalPaginas: res.data.totalPaginas})
             })
             .catch(e => { throw e })
-            console.log(paginacion)
+            // console.log(paginacion)
     }
 
 
@@ -326,6 +328,7 @@ const AdminUsuarios = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {usuarios && usuarios.length > 0 &&
                     <div className="d-flex flex-column align-items-center">
                         <table className="table table-bordered table-striped" style={{ fontSize: 14 }}>
@@ -398,11 +401,13 @@ const AdminUsuarios = props => {
                                 ))}
                             </tbody>
                         </table>
-                        <Pagination pages={paginacion.totalPaginas}
-                            onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
                     </div>
                 }
             </div>
+                {paginacion && <div style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination pages={paginacion.totalPaginas}
+                    onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+            </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea {aux ? "reactivar" : "borrar"} este usuario?</Modal.Title>

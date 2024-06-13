@@ -68,7 +68,7 @@ async function validarFormAltaSolicitud(form, feriados, validaGEDO, permisos, si
     }
 
     //Condiciones específicas
-    switch (seccionSeleccionada.cod_proceso) {
+    switch (seccionSeleccionada?.cod_proceso) {
         case "PR_PL": //Poder Legislativo
         case "PR_PJ": //Poder Judicial
         case "PR_OC": //Organos de Control

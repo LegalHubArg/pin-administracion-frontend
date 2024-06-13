@@ -412,7 +412,6 @@ const Cuenta = props => {
             else setValidaFormPermisoCarga(false)
         }
     }, [formPermisoCarga])
-    console.log(formPermisoCarga)
     useEffect(async () => {
         setLoading(true)
         let dataUsuarioAux = await getCuenta()

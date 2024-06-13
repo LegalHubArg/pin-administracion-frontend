@@ -37,6 +37,7 @@ const NuevaNorma = props => {
 
 
     const [contentEditor, setContentEditor] = useState("");
+    const [contenidoEditorTextoActualizado, setContenidoEditorTextoActualizado] = useState("");
     const editorOptions = {
         buttonList: [
             ["undo", "redo"],
@@ -72,6 +73,47 @@ const NuevaNorma = props => {
             ]
         ]
     };
+
+    const editorOptionsTA = {
+        attributesWhitelist: {
+          all: "style"
+        },
+        previewTemplate: "<div style='width:auto; max-width:900px; margin:auto;'>    <h1>Preview Template</h1>     {{contents}}     <div>_Footer_</div></div>            ",
+        buttonList: [
+          ["undo", "redo"],
+          ["removeFormat"],
+          ["font", "fontSize", "formatBlock", "bold", "underline", "italic"],
+          ["fontColor", "hiliteColor"],
+          ["align", "horizontalRule", "list", 'lineHeight'],
+          ["table", "link"],
+          ["showBlocks", "codeView"]
+        ],
+        imageRotation: false,
+        font: [
+          'Arial'
+        ],
+        defaultStyle: 'font-family: Arial; font-size: 11px;',
+        fontSize: [11],
+        colorList: [
+          [
+            "#828282",
+            "#FF5400",
+            "#676464",
+            "#F1F2F4",
+            "#FF9B00",
+            "#F00",
+            "#fa6e30",
+            "#000",
+            "rgba(255, 153, 0, 0.1)",
+            "#FF6600",
+            "#0099FF",
+            "#74CC6D",
+            "#FF9900",
+            "#CCCCCC"
+          ]
+        ]
+    };
+
 
     const handleEditorChange = (e) => {
         setContentEditor(e)
@@ -394,7 +436,6 @@ const NuevaNorma = props => {
                 })
                 break;
             case 'dependencias':
-                value = e.target.value;
                 value = parseInt(e.target.value);
                 if (isNaN(value)) {
                     break;
@@ -469,6 +510,21 @@ const NuevaNorma = props => {
         }
 
     }
+    const handleEditorTextoActualizado = (e) => {
+        setContenidoEditorTextoActualizado(e)
+    }
+    
+    /* const guardarCambiosTextoActualizado = async () => {
+        let body = {
+          idNormaSDIN: idNormaSDIN,
+          textoActualizado: contenidoEditorTextoActualizado,
+          usuario: localStorage.getItem("user_cuit")
+        }
+        let token = localStorage.getItem("token");
+        await ApiPinPost('/api/v1/sdin/normas/editar/texto-actualizado', body, token).then(_ => {
+          window.location.reload()
+        }).catch(e => { throw e })
+    } */
 
     const handleChangeDoc = async (doc) => {
         let docSize = doc.size
@@ -495,7 +551,6 @@ const NuevaNorma = props => {
     }
     const handleChangeTA = async (doc) =>{
         let docSize = doc.size
-        console.log("CAMBIANDO",doc)
         if (document.getElementById('file-input-ta').files == []){
             setTextoActualizado();
             setForm({...form,nombreTextoActualizado:null})
@@ -703,7 +758,7 @@ const NuevaNorma = props => {
         setLoading(true);
         try {
             let token = localStorage.getItem("token");
-            let body = { ...form, documento, anexos,textoActualizado,adjunto, cuit: localStorage.getItem("user_cuit").toString() }
+            let body = { ...form, documento, anexos,contenidoEditorTextoActualizado,textoActualizado,adjunto, cuit: localStorage.getItem("user_cuit").toString() }
             await ApiPinPost('/api/v1/sdin/normas/crear', body, token).then((res) => {
                 navigate("/sdin/ficha-norma/" + String(res.data.idNormaSDIN))
             }).catch(function (error) {
@@ -966,7 +1021,7 @@ const NuevaNorma = props => {
                                         </div>
                                         <div className="card dependencias">
                                             {dependencias && form?.dependencias?.length > 0 && form?.dependencias?.map((elem) =>
-                                                <span className="badge badge-info">
+                                                <span className="badge badge-info" style={{whiteSpace:"normal", padding:"1em 1em 2em 1em"}}>
                                                     {decode(elem.dependencia)}&nbsp;
                                                     <FaTimes color='#C93B3B' type='button'
                                                         onClick={() => setForm({
@@ -1139,6 +1194,31 @@ const NuevaNorma = props => {
                                         <FaTimes color="#C93B3B" type='button' onClick={() => deleteAdjunto()}
                                         title="Eliminar" id="eliminar-textoActualizado" />
                                         }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card">
+                                <button
+                                    id='boton4'
+                                    className="card-header card-link"
+                                    data-toggle="collapse"
+                                    data-target="#collapse4"
+                                    type="button">
+                                    Texto Actualizado Editor
+                                </button>
+
+                                <div
+                                    className="collapse show"
+                                    id="collapse4"
+                                    data-parent="#accordion"
+                                    >
+                                    <div className="">
+                                        <SunEditor height="400px" placeholder="Ingrese el texto de la norma..." lang="es"
+                                            setOptions={editorOptionsTA}
+                                            setContents={contenidoEditorTextoActualizado}
+                                            onChange={e => handleEditorTextoActualizado(e)}
+                                            id="textoActualizado" name="textoActualizado"
+                                        />
                                     </div>
                                 </div>
                             </div>

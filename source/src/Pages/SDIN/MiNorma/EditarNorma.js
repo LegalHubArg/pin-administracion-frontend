@@ -96,7 +96,7 @@ const EditarNorma = props => {
     ]
   };
   useEffect(() => {
-    console.log(contentEditor)
+    // console.log(contentEditor)
   }, [contentEditor])
 
   const handleEditorChange = (e) => {
@@ -334,7 +334,7 @@ const EditarNorma = props => {
             let token = localStorage.getItem("token");
 
             await ApiPinPost('/api/v1/boletin-oficial/normas', body, token).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 setNormas(Array.from(res.data.normas))
                 setAnexos(Array.from(res.data.anexos))
                 let auxPaginacion = paginacion;
@@ -536,9 +536,9 @@ const EditarNorma = props => {
         }
       }
 
-    useEffect(() => {
-        console.log(form)
-    }, [form])
+    // useEffect(() => {
+    //     console.log(form)
+    // }, [form])
 
     //Hook inicial
     useEffect(async () => {

@@ -7,6 +7,8 @@ import Spinner from '../../../Components/Spinner/Spinner';
 import { FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import moment from 'moment';
+import { Pagination } from '@gcba/obelisco'
+
 
 const RelacionesTiposABM = props => {
     const [relacionesTiposABM, setRelacionesTiposABM] = useState([])
@@ -15,6 +17,7 @@ const RelacionesTiposABM = props => {
     const [showModal, setShowModal] = useState(false)
     const [showExiste, setShowExiste] = useState(false)
     const [tipoBorrar, setTipoBorrar] = useState(null)
+    const [totalResultados, setTotalResultados] = useState(null)
 
     const [form, setForm] = useState({
         idRelacion: null,
@@ -29,6 +32,28 @@ const RelacionesTiposABM = props => {
         descripcion: "",
         tipo: ""
     })
+
+    const [ordenamiento, setOrdenamiento] = useState({
+        campo: 'idNormaSDIN',
+        orden: 'DESC',
+        cambiarOrdenamiento: false
+    })
+    const [paginacion, setPaginacion] = useState({
+        paginaActual: 1,
+        limite: 10,
+        totalPaginas: 1,
+        botones: [],
+        cambiarPagina: false
+    })
+
+    useEffect(async () => {
+        if (paginacion.cambiarPagina === true) {
+            let auxPaginacion = paginacion;
+            auxPaginacion.cambiarPagina = false;
+            setPaginacion({ ...auxPaginacion })
+            await getRelacionesTiposABM()
+        }
+    }, [paginacion])
 
     const handleForm = (e) => {
         let value = e.target.value;
@@ -49,7 +74,7 @@ const RelacionesTiposABM = props => {
 
     const handleFormEdicion = (e) => {
         let value = e.target.value;
-        console.log(value)
+        // console.log(value)
         switch (e.target.name) {
             case 'relacion':
                 setFormEdicion({ ...formEdicion, relacion: value })
@@ -68,11 +93,19 @@ const RelacionesTiposABM = props => {
         let body = {
             usuario: localStorage.getItem("user_cuit"),
             idUsuario: JSON.parse(localStorage.perfiles)[0].idUsuario,
+            ...paginacion
         }
         await ApiPinPost('/api/v1/sdin/abm/relaciones-tipos/traer', body, localStorage.getItem("token"))
             .then((res) => {
                 setRelacionesTiposABM(res.data.data)
-                console.log("quiero saber: ", res.data.data)
+                setTotalResultados(res.data.totalRelacionesTipos)
+                let auxPaginacion = paginacion;            
+            auxPaginacion.totalPaginas = Math.ceil(res.data.totalRelacionesTipos / auxPaginacion.limite);
+            auxPaginacion.botones = [];
+            for (let i = 1; i <= paginacion.totalPaginas; i++) {
+                auxPaginacion.botones.push(i)
+            }
+            setPaginacion({ ...auxPaginacion })
             })
             .catch()
     }
@@ -224,6 +257,7 @@ const RelacionesTiposABM = props => {
                         </div>
                     </div>
                 </div>
+                <p>Resultados ({totalResultados}): </p>
                 {relacionesTiposABM && relacionesTiposABM.length > 0 &&
                     <table className="table table-bordered">
                         <thead>
@@ -279,6 +313,10 @@ const RelacionesTiposABM = props => {
                     </table>
                 }
             </div>
+                {paginacion && relacionesTiposABM?.length > 0 && <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination pages={paginacion.totalPaginas}
+                        onPageSelected={page => setPaginacion({ ...paginacion, paginaActual: page + 1, cambiarPagina: true })} />
+                </div>}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header>
                     <Modal.Title>Está seguro que desea eliminar esta relación?</Modal.Title>

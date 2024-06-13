@@ -330,12 +330,12 @@ const GenerarBoletin = props => {
 
         const flagCheckNoAsignadas = (id) => {
             let response = checkedNormasNoAsignadas.includes(id)
-            console.log(response)
+            //console.log(response)
             return response
         }
         const flagCheckAsignadas = (id) => {
             let response = checkedNormasAsignadas.includes(id)
-            console.log(response)
+            // console.log(response)
             return response
         }
 
@@ -406,31 +406,33 @@ const GenerarBoletin = props => {
                                             </button>
                                         </td>
                                         <td class="accion">
-                                            <div class="dropdown-container">
-                                                <div class="drowdown">
-                                                    <button className="btn acciones-norma"
-                                                        data-toggle="dropdown"
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        title="Anexos"
-                                                    >
-                                                        <FaPaperclip />
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        {anexos && (anexos.length > 0) ? (
-                                                            (anexos.filter(a => a.idNorma === n.idNorma).length > 0) ? (
-                                                                (anexos.filter(a => a.idNorma === n.idNorma)).map(a =>
-                                                                    <button class="dropdown-item btn-sm"
-                                                                        type="button"
-                                                                        onClick={() => mostrarAnexo(a)}
-                                                                    >{a.normaAnexoArchivo}
-                                                                    </button>
-                                                                ))
-                                                                : ('No hay anexos disponibles.'))
-                                                            : ('No hay anexos disponibles.')}
+                                            {(anexos.length > 0) && (anexos.filter(a => a.idNorma === n.idNorma).length > 0) ?
+                                            (<>
+                                                    <div class="dropdown-container">
+                                                        <div class="drowdown">
+                                                            <button className="btn acciones-norma"
+                                                                data-toggle="dropdown"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false"
+                                                                title="Anexos"
+                                                            >
+                                                                <FaPaperclip />
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                {(anexos.filter(a => a.idNorma === n.idNorma).length > 0) ?(anexos.filter(a => a.idNorma === n.idNorma)).map(a =>
+                                                                            <button class="dropdown-item btn-sm"
+                                                                                type="button"
+                                                                                onClick={() => mostrarAnexo(a)}
+                                                                            >{a.normaAnexoArchivo}
+                                                                            </button>
+                                                                        )
+                                                                        : ('No hay anexos disponibles.')
+                                                                }
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                            </>
+                                            ):(<></>)}
                                         </td>
                                         <td class="accion">
                                             <input id={asignada ? `normaAsignada-${n.idNorma}` : `normaNoAsignada-${n.idNorma}`}
@@ -575,7 +577,6 @@ const GenerarBoletin = props => {
                 usuario: parseInt(localStorage.idUsuarioBO),
                 ...boletinEditado
             }
-            console.log(body)
             let token = localStorage.getItem("token");
             await ApiPinPost('/api/v1/boletin-oficial/boletin/editar', body, token)
             const copiaAsignadas = [...normasAsignadas]
