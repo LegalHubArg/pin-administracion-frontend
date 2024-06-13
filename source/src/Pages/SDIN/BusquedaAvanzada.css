@@ -1,0 +1,128 @@
+#pagina-consultas .filtros-busqueda>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-consultas .opciones-visualizacion>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-consultas #boton-buscar{
+    grid-column: 2 / 4;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-consultas .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    grid-column-start: 1;
+    background-color: transparent;
+}
+
+#pagina-consultas .filtros-busqueda>form .form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-consultas .filtros-busqueda>form>.form-group *{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-consultas table{
+    font-size:x-small;
+}
+
+#pagina-consultas table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-consultas table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-consultas #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-consultas #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-consultas .titulo{
+    display:flex; 
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+#pagina-consultas .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-consultas .campo-numero-norma{
+    width: 50%;
+}
+
+#pagina-consultas .dos-columnas{
+    grid-column: 3 / 5;
+    width: 100%;
+}
+
+#pagina-consultas #boton-ajustar {
+    font-size: large;
+    padding: 15px 120px 35px 120px;
+    justify-content: center;
+}
+
+#pagina-consultas .dependencias{
+    display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    min-height: 90%;
+    max-height: 100%;
+    padding: 1vh;
+    align-self: end;
+}
+
+#pagina-consultas .dependencias>*{
+    max-height: 1%;
+    margin: 0 1vh 1vh 0;
+}
+#pagina-consultas #autocomplete-options {
+    overflow: auto;
+    max-height: 200px;
+    max-width: 100%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5) !important;
+    background-color: #F3F6F9;
+    border-radius: 5px;
+}
+
+#pagina-consultas .dropdown .dropdown-menu .dropdown-item:hover {
+    box-shadow: none;
+    text-decoration: none;
+    background-color: #D1D8E0;
+    color: black !important
+}
+
+#pagina-consultas .rango-fechas {
+    display: grid;
+    grid-template-columns: 1fr 1vh 1fr;
+    justify-items: center;
+    align-items: center;
+}

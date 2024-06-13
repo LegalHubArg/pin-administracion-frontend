@@ -1,0 +1,22 @@
+#pagina-nueva-ley .form-group.fila{
+grid-column: 1 / 5;
+}
+
+#pagina-nueva-ley #datos .card-body{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-nueva-ley .titulo{
+    display:flex; 
+    justify-content: space-between;
+}
+#pagina-nueva-ley .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-nueva-ley .boton-guardar{
+    justify-content: center;
+}

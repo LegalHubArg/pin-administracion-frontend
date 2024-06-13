@@ -1,0 +1,20 @@
+#autocomplete #autocomplete-options {
+    overflow: auto;
+    max-height: 300px;
+    max-width: 100%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5) !important;
+    background-color: #F3F6F9;
+    border-radius: 5px;
+}
+
+#autocomplete .dropdown .dropdown-menu .dropdown-item:hover {
+    box-shadow: none;
+    text-decoration: none;
+    background-color: #D1D8E0;
+    color: black !important
+}
+
+#autocomplete .dropdown .dropdown-menu {
+    width: unset !important;
+    padding: 5px;
+}

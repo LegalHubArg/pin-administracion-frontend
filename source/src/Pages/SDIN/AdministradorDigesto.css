@@ -1,0 +1,15 @@
+#boton-generar-digesto {
+    max-height: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.corte-digesto:hover .hide {
+    display: block;
+}
+
+.boton-cerrar {
+    cursor: pointer;
+}

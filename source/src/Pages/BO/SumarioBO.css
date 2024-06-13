@@ -1,0 +1,84 @@
+ol li.ordenable {
+    counter-increment: num;
+    font-size: 1em;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    border-color: #D1D8E0;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
+    background-color: white;
+}
+
+ol.custom-ol {
+    list-style-type: none;
+    margin-left: 10px !important;
+    margin-bottom: 8px !important;
+}
+
+ol li.ordenable::marker {
+    display: none
+}
+
+ol li.ordenable::before {
+    content: counter(num);
+    height: 3em;
+    width: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-color: #D1D8E0;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
+    right: 3em;
+    background-color: #F3F6F9;
+}
+
+.no-hover {
+    pointer-events: none;
+}
+
+#tabla-seccion {
+    table-layout: fixed !important;
+    width: 100%;
+    font-size: small;
+}
+
+#tabla-seccion *,
+#tabla-seccion * * {
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+#tr-repas td:last-of-type {
+    border-right: 1px solid #E6EBF0;
+    border-top: 1px solid #E6EBF0;
+}
+
+.sumario-badge {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1vh;
+}
+
+#tabla-seccion .sumario-badge {
+    font-size: x-small;
+    text-align: left;
+
+}
+
+.badge+.badge {
+    margin-left: 0;
+    margin-top: .5rem;
+}
+
+.icono-reactivar:hover{
+    animation: spin 1s;
+}

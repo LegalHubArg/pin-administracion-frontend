@@ -1,0 +1,94 @@
+/* Para que ocupe toda la pantalla:     */
+/*      (Pisa obelisco)     */
+
+/* @media (min-width: 1120px){
+    .container{
+        max-width: 100% ;
+    }
+}  */
+
+#pagina-detalle-solicitud .botones{
+    text-align: end;
+}
+
+#pagina-detalle-solicitud .botones>*{
+    margin:1vh;
+}
+
+#pagina-detalle-solicitud #boton-volver{
+    opacity: 80%;
+}
+
+#pagina-detalle-solicitud .vl {
+    border-left: 1px solid #D1D8E0;
+    grid-row-start: 1;
+    grid-row-end: max;
+    grid-column-start: 2;
+}
+
+#pagina-detalle-solicitud .main-grid {
+    display: grid;
+    grid-template-columns: 5fr 2% 2fr;
+    grid-template-rows: repeat(15, 1fr);
+    column-gap: 1em;
+    row-gap: 1em;
+    margin-bottom: 2em;
+}
+
+#pagina-detalle-solicitud .documentos {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-row-end: max;
+}
+
+#pagina-detalle-solicitud .btn-wrapper {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-start: 1;
+    grid-column-end: max;
+    column-gap: 1em;
+}
+
+#pagina-detalle-solicitud .btn-wrapper>* {
+    height: 120%;
+}
+
+#pagina-detalle-solicitud .documento-vista {
+    padding-inline: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0.5em !important;
+
+}
+
+#pagina-detalle-solicitud .card-body::-webkit-scrollbar {
+    width: 4em;
+}
+
+#pagina-detalle-solicitud .doc-view {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* .accordion{
+    display:flex;
+    flex-direction: column;
+    flex-grow: 10;
+} */
+
+#pagina-detalle-solicitud .collapse .card-body.documento-vista {
+
+    height: 400px;
+}
+
+#pagina-detalle-solicitud .datos {
+    grid-row-start: 1;
+    grid-row-end: max;
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+#pagina-detalle-solicitud .datos>* {
+    margin-block: 0.5em;
+}

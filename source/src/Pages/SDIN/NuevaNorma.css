@@ -1,0 +1,49 @@
+#pagina-nueva-norma .form-group.fila{
+grid-column: 1 / 5;
+}
+
+#pagina-nueva-norma #datosBasicos .card-body{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-nueva-norma .titulo{
+    display:flex; 
+    justify-content: space-between;
+}
+#pagina-nueva-norma .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-nueva-norma .boton-guardar{
+    justify-content: center;
+}
+
+#pagina-nueva-norma .obs{
+    grid-column: 1 / 4;
+}
+
+#pagina-nueva-norma .dependencias{
+    grid-column: 3 / 5;
+    display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    max-height: 90px;
+    padding: 2vh;
+}
+#pagina-nueva-norma .dependencias>*{
+    max-height: 1%;
+    margin: 0 1vh 1vh 0;
+}
+
+#pagina-nueva-norma #file-input-anexos{
+    max-width: 123px;
+    color: transparent;
+}
+
+#pagina-nueva-norma #file-input-documento{
+    max-width: 30em;
+}

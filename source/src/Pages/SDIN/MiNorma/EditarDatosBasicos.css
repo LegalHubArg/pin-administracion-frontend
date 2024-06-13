@@ -1,0 +1,108 @@
+#pagina-editar-datos-basicos .accordion{
+    margin-bottom: 2em;
+}
+
+#pagina-editar-datos-basicos .form-group.fila{
+    grid-template-columns: 1fr;
+    justify-content: space-around;
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+#pagina-editar-datos-basicos .form.tres{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1em;
+    justify-content: space-around;
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+#pagina-editar-datos-basicos form .filtros-busqueda {
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-editar-datos-basicos .filtros-busqueda>.form-exept{
+    display:grid;
+    grid-template-columns: 1fr;
+    column-gap: 1em;
+}
+
+#pagina-editar-datos-basicos .filtros-busqueda>form>.form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-editar-datos-basicos .filtros-busqueda>form>.form-group>*{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-editar-datos-basicos .filtros-busqueda>form>#boton-buscar{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    max-width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-editar-datos-basicos .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    grid-column-start: 1;
+    background-color: transparent;
+}
+
+#pagina-editar-datos-basicos .filtros-busqueda>form>.row-2{
+    grid-row: 2;
+}
+#pagina-editar-datos-basicos .filtros-busqueda>form>.row-3{
+    grid-row: 3;
+}
+#pagina-editar-datos-basicos .filtros-busqueda>form>.row-4{
+    grid-row: 4;
+}
+
+#pagina-editar-datos-basicos table{
+    font-size:x-small;
+}
+
+#pagina-editar-datos-basicos table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-editar-datos-basicos table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-editar-datos-basicos #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-editar-datos-basicos #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-editar-datos-basicos .titulo{
+    display:flex; 
+    justify-content: space-between;
+}
+#pagina-editar-datos-basicos .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-editar-datos-basicos #boton-actualizar {
+  justify-content: center;
+}

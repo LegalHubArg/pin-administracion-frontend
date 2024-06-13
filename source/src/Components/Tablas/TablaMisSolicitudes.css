@@ -1,0 +1,13 @@
+#tabla-solicitudes th {
+    text-align: center;
+}
+
+#tabla-solicitudes td.limitada{
+    max-width: 180px;
+    overflow: hidden;
+}
+
+#tabla-solicitudes .tabla-vacia{
+    text-align: center;
+    font-size: medium;
+}

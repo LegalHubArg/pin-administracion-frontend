@@ -1,0 +1,90 @@
+#pagina-mis-normas .filtros-busqueda>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-mis-normas .opciones-visualizacion>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-mis-normas #boton-buscar{
+    grid-column: 2 / 4;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-mis-normas .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    grid-column-start: 1;
+    background-color: transparent;
+}
+
+#pagina-mis-normas .filtros-busqueda>form .form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-mis-normas .filtros-busqueda>form>.form-group *{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-mis-normas table{
+    font-size:x-small;
+}
+
+#pagina-mis-normas table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-mis-normas table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-mis-normas #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-mis-normas #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-mis-normas .titulo{
+    display:flex; 
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+#pagina-mis-normas .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-mis-normas .campo-numero-norma{
+    width: 50%;
+}
+
+#pagina-mis-normas .dos-columnas{
+    grid-column: 3 / 5;
+    width: 100%;
+}
+
+#pagina-mis-normas #boton-ajustar {
+    font-size: large;
+    padding: 15px 120px 35px 120px;
+    justify-content: center;
+}

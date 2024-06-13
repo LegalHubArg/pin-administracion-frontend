@@ -1,0 +1,95 @@
+#pagina-importar-BO .accordion{
+    margin-bottom: 2em;
+}
+
+#pagina-importar-BO .filtros-busqueda>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-importar-BO .filtros-busqueda>form>.form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-importar-BO .filtros-busqueda>form>.form-group>*{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-importar-BO .filtros-busqueda>form>#boton-buscar{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    max-width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-importar-BO .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    grid-column-start: 1;
+    background-color: transparent;
+}
+
+#pagina-importar-BO .filtros-busqueda>form>.row-2{
+    grid-row: 2;
+}
+#pagina-importar-BO .filtros-busqueda>form>.row-3{
+    grid-row: 3;
+}
+#pagina-importar-BO .filtros-busqueda>form>.row-4{
+    grid-row: 4;
+}
+
+#pagina-importar-BO table{
+    font-size:small;
+    font-weight:600;
+    word-break: break-all 
+}
+
+#pagina-importar-BO table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-importar-BO table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-importar-BO #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-importar-BO #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-importar-BO .titulo{
+    display:flex; 
+    justify-content: space-between;
+}
+#pagina-importar-BO .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-importar-BO .sintesis{
+    /* border-top: 0px; */
+    border-bottom: 2px solid black;
+    word-break: break-word;
+}
+
+#pagina-importar-BO .sintesis::before{
+    content: "Síntesis: ";
+    font-weight: bold;
+}

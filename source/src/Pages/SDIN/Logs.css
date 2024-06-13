@@ -1,0 +1,128 @@
+#pagina-filtros .filtros-busqueda>form{
+    display:grid;
+    grid-template-columns: 3fr 3fr;
+    column-gap: 1em;
+}
+
+#pagina-filtros .opciones-visualizacion>form{
+    display:grid;
+    grid-template-columns: 3fr 3fr;
+    column-gap: 1em;
+}
+
+#pagina-filtros #boton-buscar{
+    grid-column: 2 / 4;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-filtros .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    grid-column-start: 1;
+    background-color: transparent;
+}
+
+#pagina-filtros .filtros-busqueda>form .form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-filtros .filtros-busqueda>form>.form-group *{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-filtros table{
+    font-size:x-small;
+}
+
+#pagina-filtros table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-filtros table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-filtros #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-filtros #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-filtros .titulo{
+    display:flex; 
+    justify-content: space-between;
+    margin-top: 2em;
+}
+
+#pagina-filtros .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+
+#pagina-filtros .campo-numero-norma{
+    width: 50%;
+}
+
+#pagina-filtros .dos-columnas{
+    grid-column: 3 / 5;
+    width: 100%;
+}
+
+#pagina-filtros #boton-ajustar {
+    font-size: large;
+    padding: 15px 120px 35px 120px;
+    justify-content: center;
+}
+
+#pagina-filtros .dependencias{
+    display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    min-height: 90%;
+    max-height: 100%;
+    padding: 1vh;
+    align-self: end;
+}
+
+#pagina-filtros .dependencias>*{
+    max-height: 1%;
+    margin: 0 1vh 1vh 0;
+}
+#pagina-filtros #autocomplete-options {
+    overflow: auto;
+    max-height: 200px;
+    max-width: 100%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5) !important;
+    background-color: #F3F6F9;
+    border-radius: 5px;
+}
+
+#pagina-filtros .dropdown .dropdown-menu .dropdown-item:hover {
+    box-shadow: none;
+    text-decoration: none;
+    background-color: #D1D8E0;
+    color: black !important
+}
+
+#pagina-filtros .rango-fechas {
+    display: grid;
+    grid-template-columns: 3fr 1vh 3fr;
+    justify-items: center;
+    align-items: center;
+}

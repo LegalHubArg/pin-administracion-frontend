@@ -1,0 +1,46 @@
+
+.fecha-seleccionada {
+    background-color:#FFDB2E !important;
+}
+
+.fecha-ya-publicada {
+    background-color: #26874A !important;
+    cursor:default !important;
+    color: white;
+}
+
+.fecha-no-seleccionada {
+    background-color: white !important;
+}
+
+.react-calendar__tile--active {
+    color: black !important;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    color: #d10000 !important;
+}
+
+.react-calendar {
+    font-family: 'Nunito' !important;
+    font-weight: bolder !important;
+    border: 0px;
+    box-shadow: 0 1px 3px rgba(56, 72, 92, 0.2);
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    color: black;
+    background-color: #E6EBF0;
+    border-bottom: #505E70;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none;
+}
+
+.react-calendar__tile:hover{
+    box-shadow: 0 0 1px 1px rgb(207, 207, 207);
+    filter: brightness(0.98)
+}

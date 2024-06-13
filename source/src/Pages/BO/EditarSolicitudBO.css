@@ -1,0 +1,148 @@
+#pagina-editar-solicitud .form {
+    display: grid;
+    grid-auto-rows: minmax(min-content, max-content);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 4vh;
+    row-gap: 5vh;
+}
+
+#pagina-editar-solicitud .sumario {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    max-height: 100%;
+}
+
+#pagina-editar-solicitud .editor {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    /*     grid-row-start: 8;
+    grid-row-end: 12; */
+    min-height: 360px;
+}
+
+#pagina-editar-solicitud .tags {
+    grid-column-start: 3;
+    grid-column-end: 5;
+    max-height: 100%;
+}
+
+#pagina-editar-solicitud .tags-2 {
+    grid-column-end: 5;
+    grid-column-start: 1;
+    max-height: 100%;
+}
+
+#pagina-editar-solicitud .sinmargeninferior {
+    margin-bottom: 0;
+    height: 100px;
+}
+
+#pagina-editar-solicitud .acronimo {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    grid-template-rows: 25% 50%;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    height: 100%;
+    margin: 0px !important;
+}
+
+#pagina-editar-solicitud .carga-documentos {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    max-width: 160px;
+}
+
+#pagina-editar-solicitud .carga-anexos {
+    grid-column-start: 1;
+    max-width: 124px;
+}
+
+#pagina-editar-solicitud .card {
+    background-color: #F3F6F9;
+    grid-area: auto / 3 / span 2 / span 2;
+}
+
+#pagina-editar-solicitud .ingresar-solicitud {
+    grid-column: 1;
+}
+
+#pagina-editar-solicitud .row-2 {
+    grid-row: 2;
+}
+
+.validacion {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    display: flex;
+}
+
+#pagina-editar-solicitud input[type=file] {
+    color: transparent
+}
+
+#pagina-editar-solicitud .badge.badge-success {
+    margin-left: 10px;
+    font-weight: bold;
+    transition: visibility 0s 2s, opacity 2s linear;
+}
+
+#pagina-editar-solicitud .validacion-alerta {
+    max-height: 0px;
+    margin: 5px;
+}
+
+#pagina-editar-solicitud .campos-licitaciones {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+#pagina-editar-solicitud .nombre-licitacion {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: left;
+}
+
+#pagina-editar-solicitud .acronimo label {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+}
+
+#pagina-editar-solicitud .acronimo input {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+}
+
+#pagina-editar-solicitud .acronimo button {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    margin-block: 0px !important;
+    margin-inline: 3px !important;
+    padding: 0px !important;
+    border-radius: 0.5em;
+    min-height: 50px;
+}
+
+#pagina-editar-solicitud .acronimo div {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    margin: 0;
+}
+
+#pagina-editar-solicitud header{
+    display: flex;
+    justify-content: space-between;
+}
+#pagina-editar-solicitud header #usuarios-activos{
+    font-size: small;
+}

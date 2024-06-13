@@ -1,0 +1,82 @@
+#pagina-descriptores .accordion{
+    margin-bottom: 2em;
+}
+
+#pagina-descriptores .filtros-busqueda>form{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 1em;
+}
+
+#pagina-descriptores .filtros-busqueda>form>.form-group{
+    margin-bottom: 0;
+    min-height: 70px;
+}
+#pagina-descriptores .filtros-busqueda>form>.form-group>*{
+    margin-bottom: 0;
+    max-height: 35px;
+    font-size: small;
+}
+
+#pagina-descriptores .filtros-busqueda>form>#boton-buscar{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    max-width: 50%;
+    margin-left: 25%;
+    margin-top: 1em;
+}
+
+#pagina-descriptores .filtros-busqueda>form>#boton-borrar-filtros{
+    margin-top: 1em;
+    background-color: transparent;
+}
+
+#pagina-descriptores .filtros-busqueda>form>.row-2{
+    grid-row: 2;
+}
+#pagina-descriptores .filtros-busqueda>form>.row-3{
+    grid-row: 3;
+}
+#pagina-descriptores .filtros-busqueda>form>.row-4{
+    grid-row: 4;
+}
+
+#pagina-descriptores table{
+    font-size:x-small;
+}
+
+#pagina-descriptores table>tbody>tr>td{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+}
+
+#pagina-descriptores table>thead>tr>th{
+    margin: 0 !important;
+    padding-block:5px !important;
+    padding-inline: 10px !important;
+    white-space: nowrap;
+}
+
+#pagina-descriptores #cantidadNormas {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-descriptores #cantidadNormas>* {
+    margin: 0px !important;
+}
+
+#pagina-descriptores .titulo{
+    display:flex; 
+    justify-content: space-between;
+}
+#pagina-descriptores .titulo>div{
+    display:flex;
+    align-items:flex-end;
+}
+

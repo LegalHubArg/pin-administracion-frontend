@@ -1,0 +1,26 @@
+#pagina-crear-boletin .form-creacion{
+    display:flex;
+    column-gap: 20px;
+    padding:2em;
+    border-radius: 12px;
+    border-color: #F3F6F9;
+    border-style: solid;
+}
+
+#pagina-crear-boletin #fechaPublicacion{
+    width: 250px;
+}
+
+#pagina-crear-boletin #crear-boletin{
+min-width: 200px;
+}
+
+#pagina-crear-boletin .firmar-boletin{
+    background-color: #007BC7;
+    color: white;
+}
+
+#pagina-crear-boletin .firmar-boletin:hover{
+    background-color: #00609c;
+    color: white;
+}

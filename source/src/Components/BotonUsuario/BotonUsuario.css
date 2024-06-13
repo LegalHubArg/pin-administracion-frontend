@@ -1,0 +1,20 @@
+.red-button {
+    color: #c93b3b; /* Color rojo para las letras */
+    border: 2px solid #c93b3b; /* Borde rojo para el botón */
+}
+
+.red-button span {
+    color: #c93b3b; /* Color rojo para el texto */
+  }
+
+.red-button:before {
+    color: #c93b3b; /* Color rojo para el icono */
+}
+
+.red-button-icon {
+    color: #c93b3b; /* Color rojo para las letras */
+}
+
+.red-button-icon:before {
+    color: #c93b3b; /* Color rojo para el icono */
+}

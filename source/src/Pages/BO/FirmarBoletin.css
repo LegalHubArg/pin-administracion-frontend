@@ -1,0 +1,109 @@
+#pagina-firma-boletin #firma-manual {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+#pagina-firma-boletin #firma-manual>form {
+    grid-column: 1;
+}
+
+#pagina-firma-boletin #firma-manual>h2 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#pagina-firma-boletin #firma-manual>hr {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    width: 100%;
+}
+
+#pagina-firma-boletin #boton-firma-automatica {
+    background-color: #007BC7;
+    color: white;
+    width: fit-content;
+}
+
+#pagina-firma-boletin #boton-firma-automatica:hover {
+    background-color: #00609c;
+    color: white;
+}
+
+#pagina-firma-boletin .carga-boletin {
+    max-width: 160px;
+}
+
+#pagina-firma-boletin .carga-separatas {
+    max-width: 124px;
+}
+
+#pagina-firma-boletin #card-boletin-firmado {
+    background-color: #F3F6F9;
+    grid-column: 2;
+    padding: 20px;
+}
+
+#pagina-firma-boletin #ver-boletin {
+    margin-block: 1em;
+    max-width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.5s ease-in-out;
+    -webkit-transition: max-width 0.5s ease-in-out;
+    -moz-transition: max-width 0.5s ease-in-out;
+    -o-transition: max-width 0.5s ease-in-out;
+}
+
+#pagina-firma-boletin #ver-boletin:hover {
+    max-width: 100%;
+}
+
+#pagina-firma-boletin>.ver-separata {
+    margin-bottom: 1em;
+    max-width: 95px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.5s ease-in-out;
+    -webkit-transition: max-width 0.5s ease-in-out;
+    -moz-transition: max-width 0.5s ease-in-out;
+    -o-transition: max-width 0.5s ease-in-out;
+}
+
+#pagina-firma-boletin>.ver-separata:hover {
+    max-width: 100%;
+}
+
+#pagina-firma-boletin>h4>#loading-wheel {
+    border-radius: 50%;
+    border-width: 5px;
+    border-style: solid;
+    border-top-color: #90959c;
+    border-left-color: #D1D8E0;
+    border-right-color: #D1D8E0;
+    border-bottom-color: #D1D8E0;
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+    animation: girar 1s linear infinite;
+    -moz-animation: girar 1s linear infinite;
+    -webkit-animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes girar {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes girar {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}

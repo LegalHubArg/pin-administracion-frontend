@@ -1,0 +1,22 @@
+#pagina-mis-solicitudes #cantidadNormasPropias {
+    margin-bottom: 0;
+    max-height: 25px;
+    max-width:70px;
+    min-width:50px;
+    font-size: small;
+    padding: 0px 25px 0px 6px;
+    margin: 5px;
+}
+
+#pagina-mis-solicitudes #cantidadNormasPropias>* {
+    margin: 0px !important;
+}
+
+#pagina-mis-solicitudes section>div{
+    display:flex;
+    justify-content: space-between;
+}
+#pagina-mis-solicitudes section>div>div{
+    display:flex;
+    align-items: flex-end;
+}
